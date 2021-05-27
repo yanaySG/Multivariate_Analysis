@@ -227,7 +227,6 @@ print(hist)
 print(bxp)
 ```
 
-### {-}
 
 
 ### Análisis bivariante
