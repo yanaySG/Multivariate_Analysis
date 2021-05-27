@@ -57,39 +57,47 @@ more_correlated <- more_correlated[more_correlated %>% str_extract("^[:alnum:]+"
 
 
 
-
-
+#somme relevant insigts
 
 #como batean los jugadores por posiciones (SS pueden estar entre los mejores)
-p_playerByPos <- ggplot(mlb_Hitting, aes(x = G, y =	AVG*1000, color=POS, size=SO, label=PLAYER)) + 
+p_playerByPos <- ggplot(mlb_Hitting, aes(x = G, y =	AVG*1000, color=POS, 
+                                         size=SO, label=PLAYER)) + 
   geom_point() + xlab('Número de juegos') + ylab('AVG') + ggtitle(label = "G vs AVG")
 
 p_playerByPosNames <- ggplot(mlb_Hitting, aes(x = G, y = AVG*1000, label=PLAYER)) + 
   geom_text(size=3, col="blue")
 
 #como impulsan por posiciones (SS no deben estar entre los mejores)
-ggplot(mlb_Hitting, aes(x = G, y = RBI, color=POS, alpha=1.0, size=SO)) +
+p_impulseByPos <- ggplot(mlb_Hitting, aes(x = G, y = RBI, color=POS, 
+                                          alpha=1.0, size=SO, label=PLAYER)) +
   geom_point() + xlab('Número de juegos') + ylab('RBI')
 
-ggplot(mlb_Hitting, aes(x = G, y =RBI, label=PLAYER)) + geom_text(size=3, col="blue")
+p_impulseByPosNames <- ggplot(mlb_Hitting, aes(x = G, y =RBI, label=PLAYER)) + 
+  geom_text(size=3, col="blue")
 
-#relación de home runs
-ggplot(mlb_Hitting, aes(x = G, y = HR, color=POS, alpha=1.0, size=RBI)) +
+#relación de home runs y juegos
+p_hrByG <- ggplot(mlb_Hitting, aes(x = G, y = HR, color=POS, alpha=1.0, 
+                                   size=RBI, label=PLAYER)) +
   geom_point() + xlab('Número de juegos') + ylab('HR')
 
-ggplot(mlb_Hitting, aes(x = G, y = HR, label=PLAYER)) + geom_text(size=3, col="blue")
+p_hrByGNames <- ggplot(mlb_Hitting, aes(x = G, y = HR, label=PLAYER)) + 
+  geom_text(size=3, col="blue")
 
 #como roban los bateadores las bases por posiciones (SS suelen estar entre los mejores)
-ggplot(mlb_Hitting, aes(x = G, y =SB, color=POS, alpha=1.0, size=R)) +
+p_sbByPos <- ggplot(mlb_Hitting, aes(x = G, y =SB, color=POS, alpha=1.0, 
+                                     size=R, label=PLAYER)) +
   geom_point() + xlab('Número de juegos') + ylab('SB')
 
-ggplot(mlb_Hitting, aes(x = G, y = SB, label=PLAYER)) + geom_text(size=3, col="blue")
+p_sbByPosNames <- ggplot(mlb_Hitting, aes(x = G, y = SB, label=PLAYER)) + 
+  geom_text(size=3, col="blue")
 
 #cuanto batea un jugador comparado con la cantidad de veces al bate
-ggplot(mlb_Hitting, aes(x = AB , y = AVG*1000, color=H ,size=SO)) + geom_point() +
-  scale_color_gradient(low="lightblue", high="darkblue") + xlab('AB') + ylab('AVG(%)')
+p_avgByAb <- ggplot(mlb_Hitting, aes(x = AB , y = AVG*1000, color=H, size=SO, label=PLAYER)) + 
+  geom_point() + scale_color_gradient(low="lightblue", high="darkblue") + 
+  xlab('AB') + ylab('AVG(%)')
 
-ggplot(mlb_Hitting, aes(x = AB, y = AVG*1000, label=PLAYER)) + geom_text(size=3, col="blue")
+p_avgByAbNames <- ggplot(mlb_Hitting, aes(x = AB, y = AVG*1000, label=PLAYER)) + 
+  geom_text(size=3, col="blue")
 
 
 

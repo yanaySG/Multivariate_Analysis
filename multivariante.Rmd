@@ -262,29 +262,88 @@ corrplot(cor_matrix,
 ```
 
 
+### Algunos insigths relevantes
 
+
+#### ¿Cómo batean los jugadores por posiciones (SS pueden estar entre los mejores)? {.tabset}
+
+##### Observaciones
 ```{r echo=FALSE, results='asis'}
-
-# library(GGally)
-# 
-# # datatable(mlb_Hitting2) 
-# 
-# ggpairs(mlb_Hitting[,c(3:length(mlb_Hitting))])
-
-
-
-```
-
-
-
-```{r echo=FALSE, results='asis'}
-
+# print(p_playerByPos)
 ggplotly(p_playerByPos, tooltip = "label")
-
-# ggplotly(p_playerByPosNames)
-
-# ggplotly(p_playerByPos, tooltip = c("label"))
-
-
 ```
+
+##### Nombres de jugadores
+```{r echo=FALSE, results='asis'}
+# print(p_playerByPosNames)
+ggplotly(p_playerByPosNames)
+```
+
+
+#### ¿Cómo impulsan por posiciones (SS no deben estar entre los mejores)? {.tabset}
+
+##### Observaciones
+```{r echo=FALSE, results='asis'}
+# print(p_impulseByPos)
+ggplotly(p_impulseByPos, tooltip = "label")
+```
+
+##### Nombres de jugadores
+```{r echo=FALSE, results='asis'}
+# print(p_impulseByPosNames)
+ggplotly(p_impulseByPosNames)
+```
+
+
+#### Relación de home runs y juegos {.tabset}
+
+##### Observaciones
+```{r echo=FALSE, results='asis'}
+# print(p_impulseByPos)
+ggplotly(p_hrByG, tooltip = "label")
+```
+
+##### Nombres de jugadores
+```{r echo=FALSE, results='asis'}
+# print(p_impulseByPosNames)
+ggplotly(p_hrByGNames)
+```
+
+
+#### ¿Cómo roban los bateadores las bases por posiciones (SS suelen estar entre los mejores)? {.tabset}
+
+##### Observaciones
+```{r echo=FALSE, results='asis'}
+# print(p_impulseByPos)
+ggplotly(p_sbByPos, tooltip = "label")
+```
+
+##### Nombres de jugadores
+```{r echo=FALSE, results='asis'}
+# print(p_impulseByPosNames)
+ggplotly(p_sbByPosNames)
+```
+
+
+#### ¿Cuánto batea un jugador comparado con la cantidad de veces al bate? {.tabset}
+
+##### Observaciones
+```{r echo=FALSE, results='asis'}
+# print(p_impulseByPos)
+ggplotly(p_avgByAb, tooltip = "label")
+```
+
+##### Nombres de jugadores
+```{r echo=FALSE, results='asis'}
+# print(p_impulseByPosNames)
+ggplotly(p_avgByAbNames)
+```
+
+
+
+
+
+
+
+
 
