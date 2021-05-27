@@ -265,7 +265,7 @@ corrplot(cor_matrix,
 ### Algunos insigths relevantes
 
 
-#### ¿Cómo batean los jugadores por posiciones (SS pueden estar entre los mejores)? {.tabset}
+#### ¿Cómo batean los jugadores por posiciones? {.tabset}
 
 ##### Observaciones
 ```{r echo=FALSE, results='asis'}
@@ -280,7 +280,7 @@ ggplotly(p_playerByPosNames)
 ```
 
 
-#### ¿Cómo impulsan por posiciones (SS no deben estar entre los mejores)? {.tabset}
+#### ¿Cómo impulsan por posiciones? {.tabset}
 
 ##### Observaciones
 ```{r echo=FALSE, results='asis'}
@@ -310,7 +310,7 @@ ggplotly(p_hrByGNames)
 ```
 
 
-#### ¿Cómo roban los bateadores las bases por posiciones (SS suelen estar entre los mejores)? {.tabset}
+#### ¿Cómo roban los bateadores las bases por posiciones? {.tabset}
 
 ##### Observaciones
 ```{r echo=FALSE, results='asis'}
@@ -341,8 +341,16 @@ ggplotly(p_avgByAbNames)
 
 
 
+## Análisis multivariante
+
+### Análisis de componenes principales (PCA) 
+
+*WORK IN PROGRESS*
+
+### Análisis Discriminante 
 
 
+*WORK IN PROGRESS*
 
 
 
