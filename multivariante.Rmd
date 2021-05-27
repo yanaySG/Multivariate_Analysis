@@ -1,5 +1,10 @@
 ---
 title: "Análisis multivariante: PCA & FA"
+knit: (function(input_file, encoding) {
+  out_dir <- 'docs';
+  rmarkdown::render(input_file,
+ encoding=encoding,
+ output_file=file.path(dirname(input_file), out_dir, 'index.html'))})
 author: "Yanay Rolo Milian | Data scientist"
 output: 
   html_document:
@@ -20,8 +25,6 @@ knitr::opts_chunk$set(echo = TRUE, out.width = '100%')
 
 
 source("Analisis.R")
-
-
 
 
 ```
