@@ -41,6 +41,7 @@ source("Analisis.R")
 library(kableExtra)
 library(DT)
 library(summarytools)
+library(RColorBrewer)
 library(plotly)
 
 
@@ -146,33 +147,31 @@ variables <- data.frame(#"No." = c(1:18),
                                           "Mide la contribución total de un jugador, toma en cuenta su poder y su capacidad de embasarse. Su fórmula es *OPS=OBP+SLG*. Un buen OPS debe ser de *.753*"
                                           ))
 
- 
-
 kable(variables, "html",  caption = "") %>%
     kable_styling(bootstrap_options = c("striped", "hover"), position = "center", full_width = TRUE, font_size = 11) %>%
   column_spec(2, width = "20em")
 
-
-
-
 ```
+
+Nota: Las variables: H, 2B, 3B y HR, indican el performance más general del bateador, cuánto batea y su capacidad de alcanzar alguna base. 
 
 
 ## Análisis exploratorio
 
-Se realiza un análisis exploratorio de los datos. Se asegura que todas las variables del dataset sean numéricas exceptuando las dos primeras que almacenan el nombre de jugador y su posición en el terreno. Adicionalmente a esto, se realiza un tratamiento para los missing values en el dataset.
+Se realiza un análisis exploratorio de los datos. Se asegura que todas las variables del dataset sean numéricas exceptuando las dos primeras que almacenan el nombre de jugador y su posición en el terreno, que serán categóricas. Adicionalmente a esto, se realiza un tratamiento para los missing values en el dataset.
 
 
 ### Dataset
 
+Se visualiza la tabla de datos con información adicionada:
+
+ * Variables atómicas: Se agrega una barra a cada celda que represanta el porcentaje con respecto al total para cada registro.
+ 
+ * Variables calculadas: Se colorea el background de la celda de rojo o verde, que representa qué tan bueno es un jugador con respecto a cada variable.
+
 ```{r dataset, echo=FALSE, results='asis'}
 
-
-library(RColorBrewer)
-
-
-
-dt <-datatable(mlb_Hitting, class = 'cell-border stripe', rownames = F, options = list(pageLength = 10, autoWidth = TRUE))  %>%
+dt <-datatable(mlb_Hitting, class = 'cell-border stripe', rownames = F, options = list(pageLength = 15, autoWidth = TRUE))  %>%
   formatStyle(columns = c(1:length(mlb_Hitting)), fontSize = '70%') %>%
   formatStyle(
     'POS',
@@ -217,15 +216,31 @@ kable(descr(mlb_Hitting)[1:7,]%>%round(2), "html",  caption = "Estadísticos") %
     kable_styling(bootstrap_options = c("striped", "hover"), position = "center", full_width = TRUE, font_size = 11) 
 ```
 
-#### Histograms
-```{r echo=FALSE, results='asis', fig.height=4}
-print(hist)
-```
 
 #### Boxplots
 ```{r echo=FALSE, results='asis', fig.height=4}
 print(bxp)
 ```
+
+
+#### Histogramas
+```{r echo=FALSE, results='asis', fig.height=4}
+print(hist)
+```
+
+
+
+</div>
+
+En los boxplots se observan cajas generalmente bajas y bastantes outliers superiores en todas las variables. Estos outliers representan jugadores que destacan del resto y que por consiguiente son muy buenos en base al indicador o variable observada. Es importante tener en cuenta que las variables *SO (Strike Out)* y *CS (Catch Stealing)* tienen efecto inverso para ganar el juego, es decir que a mayor valor de estas variables más negativas resultan.  
+
+En los histogramas se observa el mismo comportamiento: En general curvas muy asimétricas exceptuando las variables calculadas (*AVG*, *OBP*, *SLG* y *OPS*) que presentan una distribución mas Normal. 
+
+
+
+ 
+
+
 
 
 
