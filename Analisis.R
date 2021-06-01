@@ -46,14 +46,51 @@ hist <- ggplot(meltData, aes(x = value)) +
 #correlations
 cor_matrix <- cor(mlb_Hitting[,3:18])
 
-#more correlated variables (over .9)
-k <- arrayInd(which(cor_matrix > .9), dim(cor_matrix))
-a <- rownames(cor_matrix)[k[,1]]
-b <- colnames(cor_matrix)[k[,2]]
+#more correlated variables (over threshold)
+more_corelated_pairs<-function(threshold=.9, sing="P"){ #"P"=positive, "N"=negative
+  
+  switch (sing,
+    "P" = {
+      cor_df <- arrayInd(which(cor_matrix > threshold), dim(cor_matrix)) %>% as.data.frame()
+      cor_df <- cor_df[-which(cor_df[1]==cor_df[2]),]
+    },
+    "N" = {
+      cor_df <- arrayInd(which(cor_matrix < -threshold), dim(cor_matrix)) %>% as.data.frame()
+    }
+  )
 
-more_correlated <- paste(a, b, sep="-")
-more_correlated <- more_correlated[more_correlated %>% str_extract("^[:alnum:]+") != 
-                                     more_correlated %>% str_extract("[:alnum:]+$")]
+  rownames(cor_df) <- NULL
+  colnames(cor_df) <- c("Variable1","Variable2")
+  
+  if(nrow(cor_df) == 0){
+    return(cor_df)
+  }
+
+  cor_df$Variable1 <- rownames(cor_matrix)[cor_df[,1]]
+  cor_df$Variable2 <- colnames(cor_matrix)[cor_df[,2]]
+
+  #deleting repeated pairs
+  repeated_pairs<-c()
+  cor_df_final<-cor_df[FALSE,]
+
+  for (v in 1:nrow(cor_df) ) {
+
+    if(! paste(cor_df$Variable1[v], cor_df$Variable2[v], sep="-") %in% repeated_pairs){
+
+      v1 <- cor_df$Variable1[v]
+      v2 <- cor_df$Variable2[v]
+    
+      repeated_pairs<-c(repeated_pairs,paste(v1, v2, sep="-"))
+      repeated_pairs<-c(repeated_pairs,paste(v2, v1, sep="-"))
+    
+      cor_df_final[nrow(cor_df_final)+1, ] <- c(v1, v2)
+    }
+  }
+  return(cor_df_final)
+}
+
+positive_correlated<-more_corelated_pairs()
+negative_correlated<-more_corelated_pairs(sing="N")
 
 
 

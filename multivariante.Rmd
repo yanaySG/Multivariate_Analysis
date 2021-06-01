@@ -212,7 +212,8 @@ dt
 ### Análisis univariante  {.tabset}
 
 ```{r echo=FALSE, results='asis', fig.height=4}
-kable(descr(mlb_Hitting)[1:7,]%>%round(2), "html",  caption = "Estadísticos") %>%
+kable(descr(mlb_Hitting, order = "p")[1:7,] %>% round(2), "html",  
+      caption = "Estadísticos") %>%
     kable_styling(bootstrap_options = c("striped", "hover"), position = "center", full_width = TRUE, font_size = 11) 
 ```
 
@@ -228,26 +229,38 @@ print(bxp)
 print(hist)
 ```
 
-
-
 </div>
 
-En los boxplots se observan cajas generalmente bajas y bastantes outliers superiores en todas las variables. Estos outliers representan jugadores que destacan del resto y que por consiguiente son muy buenos en base al indicador o variable observada. Es importante tener en cuenta que las variables *SO (Strike Out)* y *CS (Catch Stealing)* tienen efecto inverso para ganar el juego, es decir que a mayor valor de estas variables más negativas resultan.  
+En los boxplots se observan cajas generalmente bajas y bastantes outliers superiores en todas las variables. Estos outliers representan jugadores que destacan del resto y que por consiguiente son muy buenos en base al indicador o variable observada. Es importante tener en cuenta que las variables *SO (Strike Out)* y *CS (Catch Stealing)* tienen efecto inverso en realción a ganar el juego, es decir que a mayor valor de estas variables más negativas resultan.  
 
-En los histogramas se observa el mismo comportamiento: En general curvas muy asimétricas exceptuando las variables calculadas (*AVG*, *OBP*, *SLG* y *OPS*) que presentan una distribución mas Normal. 
-
-
-
- 
-
-
+En los histogramas se observa el mismo comportamiento: En general curvas muy asimétricas, con excepción de las variables calculadas (*AVG*, *OBP*, *SLG* y *OPS*) que presentan una distribución más cercana a la distribución Normal. 
 
 
 
 ### Análisis bivariante
 
+Se analiza el dataset para encontrar correlaciones por pares de variables utilizando un threshold de .9 
 
 ```{r echo=FALSE, results='asis'}
+
+threshold = .9
+
+
+
+kable(positive_correlated, "html",  caption = "Corración positiva") %>%
+    kable_styling(bootstrap_options = c("striped", "hover"), position = "float_left", full_width = FALSE, font_size = 11)
+
+kable(negative_correlated, "html",  caption = "Corración negativa") %>%
+    kable_styling(bootstrap_options = c("striped", "hover"), position = "center", full_width = FALSE, font_size = 11) 
+  
+
+```
+
+
+```{r echo=FALSE, results='asis'}
+
+threshold = .75
+
 
 
 corrplot(cor_matrix,
@@ -271,6 +284,7 @@ corrplot(cor_matrix,
 #            pch.cex = 1.3,
 #            pch.col="red",
 #            cl.cex = 1.3
+
 
 
 
