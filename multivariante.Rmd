@@ -245,15 +245,24 @@ Se analiza el dataset para encontrar correlaciones por pares de variables utiliz
 
 threshold = .9
 
+# if(positive_correlated)
 
+add_desc <- function(x){
+  meaning <- variables[variables$Variable %in% x,"Significado"]
+  return(paste0(x, " (", meaning,")"))
+}
+
+positive_correlated$Variable1<-add_desc(positive_correlated$Variable1)
+positive_correlated$Variable2<-add_desc(positive_correlated$Variable2)
 
 kable(positive_correlated, "html", caption = "Corración positiva",
       table.attr = "style='width:48%;'") %>% 
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover"),
         position = "float_left", font_size = 11)
 
+
 kable(negative_correlated, "html", caption = "Corración negativa",
-      table.attr = "style='width:48%;'") %>% 
+      table.attr = "style='width:48%;'") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover"),
         position = "right", font_size = 11)
 

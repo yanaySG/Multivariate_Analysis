@@ -51,27 +51,34 @@ more_corelated_pairs<-function(threshold=.9, sing="P"){ #"P"=positive, "N"=negat
   
   switch (sing,
     "P" = {
-      cor_df <- arrayInd(which(cor_matrix > threshold), dim(cor_matrix)) %>% as.data.frame()
+      cor_df <- arrayInd(which(cor_matrix > threshold), dim(cor_matrix), useNames = T) %>% 
+        as.data.frame()
       cor_df <- cor_df[-which(cor_df[1]==cor_df[2]),]
     },
     "N" = {
-      cor_df <- arrayInd(which(cor_matrix < -threshold), dim(cor_matrix)) %>% as.data.frame()
+      cor_df <- arrayInd(which(cor_matrix < -threshold), dim(cor_matrix), useNames = T) %>% 
+        as.data.frame()
     }
   )
 
-  rownames(cor_df) <- NULL
-  colnames(cor_df) <- c("Variable1","Variable2")
-  
   if(nrow(cor_df) == 0){
+    colnames(cor_df) <- c("Variable1","Variable2")
+    cor_df[nrow(cor_df)+1, ] <- c("Empty", "Empty")
     return(cor_df)
   }
 
+  rownames(cor_df) <- NULL
+
   cor_df$Variable1 <- rownames(cor_matrix)[cor_df[,1]]
   cor_df$Variable2 <- colnames(cor_matrix)[cor_df[,2]]
-
+  
+  for (i in 1:nrow(cor_df)) {
+    cor_df$Coef_correlacion[i] <- cor_matrix[cor_df$row[i],cor_df$col[i]]
+  }
+  
   #deleting repeated pairs
   repeated_pairs<-c()
-  cor_df_final<-cor_df[FALSE,]
+  cor_df_final<-cor_df[FALSE,c("Variable1", "Variable2",  "Coef_correlacion")]
 
   for (v in 1:nrow(cor_df) ) {
 
@@ -83,7 +90,7 @@ more_corelated_pairs<-function(threshold=.9, sing="P"){ #"P"=positive, "N"=negat
       repeated_pairs<-c(repeated_pairs,paste(v1, v2, sep="-"))
       repeated_pairs<-c(repeated_pairs,paste(v2, v1, sep="-"))
     
-      cor_df_final[nrow(cor_df_final)+1, ] <- c(v1, v2)
+      cor_df_final[nrow(cor_df_final)+1, ] <- c(v1, v2, cor_df$Coef_correlacion[v])
     }
   }
   return(cor_df_final)
