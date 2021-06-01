@@ -239,7 +239,7 @@ En los histogramas se observa el mismo comportamiento: En general curvas muy asi
 
 ### Análisis bivariante
 
-Se analiza el dataset para encontrar correlaciones por pares de variables utilizando un threshold de .9 
+Se analiza el dataset para encontrar correlaciones por pares de variables utilizando un threshold de 0.9 
 
 ```{r echo=FALSE, results='asis'}
 
@@ -247,14 +247,21 @@ threshold = .9
 
 
 
-kable(positive_correlated, "html",  caption = "Corración positiva") %>%
-    kable_styling(bootstrap_options = c("striped", "hover"), position = "float_left", full_width = FALSE, font_size = 11)
+kable(positive_correlated, "html", caption = "Corración positiva",
+      table.attr = "style='width:48%;'") %>% 
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover"),
+        position = "float_left", font_size = 11)
 
-kable(negative_correlated, "html",  caption = "Corración negativa") %>%
-    kable_styling(bootstrap_options = c("striped", "hover"), position = "center", full_width = FALSE, font_size = 11) 
-  
+kable(negative_correlated, "html", caption = "Corración negativa",
+      table.attr = "style='width:48%;'") %>% 
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover"),
+        position = "right", font_size = 11)
+
 
 ```
+
+
+
 
 
 ```{r echo=FALSE, results='asis'}
