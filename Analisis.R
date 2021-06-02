@@ -29,7 +29,9 @@ bxp <- ggplot(meltData, aes(factor(variable), value)) +
   ggtitle("") + xlab("") + ylab("") +
   theme_minimal() + 
   theme(axis.text=element_text(size = rel(.5)), axis.title=element_text(size=rel(1),face="italic"), 
-        plot.title = element_text(hjust = 0.5))     
+        plot.title = element_text(hjust = 0.5))  
+
+bxp2<-ggplot(meltData, aes(variable, value)) + geom_boxplot()
 
 hist <- ggplot(meltData, aes(x = value)) + 
   geom_histogram(col="blue", fill="lightblue" , aes(y=..density..), bins = 30) + 
@@ -39,6 +41,11 @@ hist <- ggplot(meltData, aes(x = value)) +
   theme_minimal() + 
   theme(axis.text=element_text(size = rel(.5)), axis.title=element_text(size=rel(1),face="italic"), 
         plot.title = element_text(hjust = 0.5))
+
+
+
+
+
 
 
 ## Bivariate analysis ##
@@ -105,7 +112,7 @@ negative_correlated<-more_corelated_pairs(sing="N")
 
 #como batean los jugadores por posiciones (SS pueden estar entre los mejores)
 p_playerByPos <- ggplot(mlb_Hitting, aes(x = G, y =	AVG*1000, color=POS, 
-                                         size=SO, label=PLAYER)) + 
+                                         size=SO, label=PLAYER, alpha=1.0)) + 
   geom_point() + xlab('Juegos') + ylab('Average') + ggtitle(label = "G vs AVG")
 
 p_playerByPosNames <- ggplot(mlb_Hitting, aes(x = G, y = AVG*1000, label=PLAYER)) + 
@@ -279,6 +286,14 @@ fviz_pca_biplot(pca3,
                 legend.title = "Groups",
                 repel = FALSE
 )
+
+boxplot(dfforpca[,-1])
+
+
+
+
+
+
 
 
 

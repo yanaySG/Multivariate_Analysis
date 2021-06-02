@@ -229,6 +229,12 @@ print(bxp)
 print(hist)
 ```
 
+#### Boxplots2
+```{r echo=FALSE, results='asis', fig.height=4}
+print(bxp2)
+```
+
+
 </div>
 
 En los boxplots se observan cajas generalmente bajas y bastantes outliers superiores en todas las variables. Estos outliers representan jugadores que destacan del resto y que por consiguiente son muy buenos en base al indicador o variable observada. Es importante tener en cuenta que las variables *SO (Strike Out)* y *CS (Catch Stealing)* tienen efecto inverso en realción a ganar el juego, es decir que a mayor valor de estas variables más negativas resultan.  
@@ -288,22 +294,6 @@ corrplot(cor_matrix,
          cl.cex =.5,
          number.cex=.5)
 
-# p.mat = round(as.matrix(ff$p),3),
-#            method = 'circle',
-#            type = 'lower',
-#            sig.level = c(.001, .01, .05), 
-#            tl.pos="lt", 
-#            tl.col="black", tl.cex=1.3, 
-#            tl.offset=0.2,
-#            cl.pos="r",
-#            insig = "label_sig",
-#            pch.cex = 1.3,
-#            pch.col="red",
-#            cl.cex = 1.3
-
-
-
-
 ```
 
 
@@ -316,6 +306,8 @@ corrplot(cor_matrix,
 ```{r echo=FALSE, results='asis'}
 # print(p_playerByPos)
 ggplotly(p_playerByPos, tooltip = "label")
+
+
 ```
 
 ##### Nombres de jugadores
