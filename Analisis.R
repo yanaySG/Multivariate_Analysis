@@ -159,6 +159,135 @@ p_avgByAbNames <- ggplot(mlb_Hitting, aes(x = AB, y = AVG*1000, label=PLAYER)) +
 pca <- prcomp(mlb_Hitting[,3:18], scale=TRUE)
 summary(pca)
 
+
+
+########################## testing some pca functions
+
+names(pca)
+head(pca$rotation) #eigenvalores (peso de cada componente para cada variable)
+dim(pca$rotation) #numero de componentes diferentes
+head(pca$x) #los vectores de los scores
+pca$sdev #desviación típica
+pca$sdev^2 # varianza
+
+#comprobando la importancia de la primera componente
+xx<-pca$x %>% as.data.frame()
+mlb_Hitting_testingpca <- mlb_Hitting
+mlb_Hitting_testingpca$PC1<-xx$PC1
+mlb_Hitting_testingpca$PC2<-xx$PC2
+mlb_Hitting_testingpca<-subset(mlb_Hitting_testingpca,select = -c(PLAYER, POS))
+head(mlb_Hitting_testingpca)
+cor(mlb_Hitting_testingpca)
+
+
+# otra función 
+pca2<-princomp(mlb_Hitting[,3:18], cor = TRUE)
+names(pca2)
+
+
+
+#otra función PCA de Factorminer con resultados más detallados
+dfforpca <- mlb_Hitting
+dfforpca <- dfforpca[!duplicated(dfforpca$PLAYER),]
+dfforpca <- textshape::column_to_rownames(dfforpca, loc = 1)
+
+pca3<-PCA(X=dfforpca[,2:17],ncp = 3, graph = TRUE)
+
+
+print(pca3)
+head(pca3$eig)
+
+library(factoextra) #vamos a sacar de forma más eficiente la información de un objeto PCA
+
+get_pca(pca3)#extrae información sobra las variables
+get_pca_var(pca3)#idem arriba
+get_pca_ind(pca3)#extrae información sobre las observaciones
+
+pca3$var
+
+fviz_eig(pca3) #vusualizar eigenvalores (scree plot)
+fviz_screeplot(pca3) #idem arriba
+#nota: screeplot muestra la variaza explicada de cada componente
+
+fviz_pca_ind(pca3) #representación de observaciones sobre componentes principales
+fviz_pca_ind(pca3,
+             col.ind = "cos2", #color by the quality of representation
+             gradient.cols=c("#00AFBB","#E7B800","#FC4E07"),
+             repel = FALSE #avoid text overlapping
+             ) %>% ggplotly()
+
+fviz_pca_var(pca3) #representación de variables sobre componentes principales
+fviz_pca_var(pca3, 
+             col.var = "contrib", #color by contribution to the pc
+             gradient.cols=c("#00AFBB","#E7B800","#FC4E07"),
+             repel = TRUE)
+
+fviz_pca_var(pca3, 
+             col.var = "cos2", #color by contribution to the pc
+             geom.var = "arrow",
+             gradient.cols=c("#00AFBB","#E7B800","#FC4E07"),
+             repel = FALSE)
+
+fviz_contrib(pca3,choice = "var") # representa lo que contribyen las variables a la varianza explicada
+fviz_contrib(pca3,choice = "var", axes=2)
+fviz_contrib(pca3,choice = "var", axes=3)
+#nota: mientras más a la izquierda más contribuye a la varianza
+
+
+fviz_contrib(pca3,choice = "ind") %>% ggplotly() #lo que contribuyen los individuos a la varianza explicada
+#nota: mientras más a la izquierda más contribuye a la varianza
+
+
+fviz_pca_biplot(pca3, repel = FALSE,
+                col.var = "#2E9FDF", # Variables color
+                col.ind = "#696969"  # Individuals color
+)
+
+
+fviz_pca_biplot(pca3, repel = TRUE,
+                #geom= "point", #o text o geom=c("point", "text")
+                col.var = "#2E9FDF", # Variables color
+                col.ind = "#696969", # Individuals color
+                select.ind = list(contrib = 30)
+)
+
+
+grupo <- as.factor(dfforpca$POS)
+
+
+fviz_pca_ind(pca3,
+             col.ind = grupo, # color by groups
+             # palette = c("#00AFBB", "#FC4E07","#696969"),
+             addEllipses = TRUE, # Concentration ellipses
+             ellipse.type = "confidence",
+             legend.title = "Groups",
+             repel = TRUE
+) #%>% ggplotly() 
+
+fviz_ellipses(pca3, 
+              geom = c("point","text"),
+              habillage=grupo, 
+              # habillage=1:4, 
+              palette = "Dark2",
+              repel = TRUE) 
+
+fviz_pca_biplot(pca3,
+                col.ind = grupo, # color by groups
+                # palette = c("#00AFBB", "#FC4E07","#696969"),
+                addEllipses = TRUE, # Concentration ellipses
+                ellipse.type = "confidence",
+                legend.title = "Groups",
+                repel = FALSE
+)
+
+
+
+
+
+
+
+##########################
+
 screeplot(pca, main='scatterplot',col='blue',type='barplot',pch=19)
 plot(pca,type="lines") # scree plot
 
