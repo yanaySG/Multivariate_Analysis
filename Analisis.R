@@ -198,7 +198,7 @@ dfforpca <- mlb_Hitting
 dfforpca <- dfforpca[!duplicated(dfforpca$PLAYER),]
 dfforpca <- textshape::column_to_rownames(dfforpca, loc = 1)
 
-pca3<-PCA(X=dfforpca[,2:17],ncp = 3, graph = TRUE)
+pca3<-FactoMineR::PCA(X=dfforpca[,2:17],ncp = 3, graph = FALSE)
 
 
 print(pca3)
@@ -221,7 +221,7 @@ fviz_pca_ind(pca3,
              col.ind = "cos2", #color by the quality of representation
              gradient.cols=c("#00AFBB","#E7B800","#FC4E07"),
              repel = FALSE #avoid text overlapping
-             ) %>% ggplotly()
+             ) 
 
 fviz_pca_var(pca3) #representación de variables sobre componentes principales
 fviz_pca_var(pca3, 
@@ -241,7 +241,7 @@ fviz_contrib(pca3,choice = "var", axes=3)
 #nota: mientras más a la izquierda más contribuye a la varianza
 
 
-fviz_contrib(pca3,choice = "ind") %>% ggplotly() #lo que contribuyen los individuos a la varianza explicada
+fviz_contrib(pca3,choice = "ind") #%>% ggplotly() #lo que contribuyen los individuos a la varianza explicada
 #nota: mientras más a la izquierda más contribuye a la varianza
 
 
