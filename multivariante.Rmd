@@ -298,7 +298,7 @@ corrplot(cor_matrix,
 Gráfica de *Número de juegos (G)* vs *promedio de bateo (AVG)*. El color está representado por las posiciones del terreno *(POS)* y tamaño por *Strike Outs (SO)*
 ```{r echo=FALSE, results='asis', message=FALSE}
 # print(p_playerByPos)
-ggplotly(p_playerByPos, tooltip = c("text", "label"))
+ggplotly(p_playerByPos, tooltip = c("text", "label", "x" , "y"))
 ```
 Las posiciones se muestran bastante parejas en respecto a cantidad de juegos, promedio de bateo y strike outs.
 
@@ -306,7 +306,16 @@ Las posiciones se muestran bastante parejas en respecto a cantidad de juegos, pr
 Misma gráfica pero mostrando el nombre de los jugadores.
 ```{r echo=FALSE, results='asis'}
 # print(p_playerByPosNames)
-ggplotly(p_playerByPosNames, tooltip = "label")
+ggplotly(p_playerByPosNames ) %>%
+  # layout(hoverlabel=list(bgcolor="white"))
+  # layout(
+  #   hoverlabel=list(bgcolor="label")
+    # barmode = "stack" 
+    # hovermode = "x"
+  # )
+
+style(hoverlabel = "label", marker.color = "#232F34") 
+
 ```
 Los mejores jugadores con un *AVG* mayor que 350 son Joe.
 
@@ -332,25 +341,24 @@ ggplotly(p_impulseByPosNames, tooltip = c("label","x","y"))
 ```
 
 
-#### Relación de home runs y juegos {.tabset}
-
-
+#### Relación de Home Runs y Veces al Bate {.tabset}
+Si bateador hace contacto con la pelota de una manera que le permita recorrer todas las bases y anotar una carrera se ha realizado un home run o cuadrangular. La forma más común es cuando el bateador golpea la pelota y la saca al exterior del campo de juego. Es uno de los aspectos más populares y difíciles para el bateador, es por ello que los jugadores que usualmente logran hacer este tipo de jugadas son muy valorados en el terreno.
 
 ##### Observaciones
-```{r echo=FALSE, results='asis'}
-# print(p_impulseByPos)
-ggplotly(p_hrByG, tooltip = "label")
+```{r echo=FALSE, results='asis', message=FALSE}
+ggplotly(p_hrByPos, tooltip = c("text","label","x","y"))
 ```
 
 ##### Nombres de jugadores
 Misma gráfica pero mostrando el nombre de los jugadores.
 ```{r echo=FALSE, results='asis'}
 # print(p_impulseByPosNames)
-ggplotly(p_hrByGNames)
+ggplotly(p_hrByPosNames, tooltip = c("label","x","y")) 
 ```
 
 
-#### ¿Cómo roban los bateadores las bases por posiciones? {.tabset}
+#### Relación entre bases robadas y atrapados robando {.tabset}
+Robar una base es moverse de una base a otra aprovechando que el pitcher no tiene posibilidad en ese momento de darle out, generalmente esto ocurre cuando el pitcher se está preparando para lanzar la pelota al bateador. Para robar una base el jugador tiene que ser muy rápido, ágil y astuto para utilizar el momento justo para actuar, y al mismo tiempo evitar un strike out.
 
 ##### Observaciones
 ```{r echo=FALSE, results='asis'}
@@ -362,21 +370,6 @@ ggplotly(p_sbByPos, tooltip = "label")
 ```{r echo=FALSE, results='asis'}
 # print(p_impulseByPosNames)
 ggplotly(p_sbByPosNames)
-```
-
-
-#### ¿Cuánto batea un jugador comparado con la cantidad de veces al bate? {.tabset}
-
-##### Observaciones
-```{r echo=FALSE, results='asis'}
-# print(p_impulseByPos)
-ggplotly(p_avgByAb, tooltip = "label")
-```
-
-##### Nombres de jugadores
-```{r echo=FALSE, results='asis'}
-# print(p_impulseByPosNames)
-ggplotly(p_avgByAbNames)
 ```
 
 
