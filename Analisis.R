@@ -110,12 +110,12 @@ p_playerByPos <- ggplot(mlb_Hitting,
                         aes(x = G, y = AVG*1000, color=POS, size=SO, 
                              alpha=1.0)) + 
   geom_point(aes(text = PLAYER, label=POS)) + xlab('Juegos') + ylab('Average*1000') + 
-  ggtitle(label = "Average por juegos") + theme_minimal() +
+  ggtitle(label = "Average vs juegos") + theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5, color = "darkblue",  face = "bold.italic"),
         axis.title = element_text(size = 8, color = "blue", face = "bold.italic")) +
-  geom_smooth(method = "lm", se = FALSE, size=.5)
-
-
+  guides(size = FALSE, alpha=FALSE) +
+  geom_smooth(method = "lm", se = FALSE, size=.5) 
+  
 p_playerByPosNames <- ggplot(mlb_Hitting, aes(x = G, y = AVG*1000, color=POS, label=PLAYER)) + 
   geom_text(size=2) + xlab('Juegos') + ylab('Average*1000')  +
   # geom_smooth(method = "lm", se = FALSE, size=.5) + 
@@ -132,10 +132,11 @@ p_impulseByPos <- ggplot(mlb_Hitting,
   ggtitle(label = "Carreras impulsadas vs Veces al bate") + theme_minimal() + 
   theme(plot.title = element_text(hjust = 0.5, color = "darkblue",  face = "bold.italic"),
         axis.title = element_text(size = 8, color = "blue", face = "bold.italic")) +
+  guides(size = FALSE, alpha=FALSE) +
   geom_smooth(method = "lm", se = FALSE, size=.5)
 
-p_impulseByPosNames <- ggplot(mlb_Hitting, aes(x = AB, y =RBI, label=PLAYER)) + 
-  geom_text(size=3, col="blue") + xlab('Veces al bate') + ylab('Carreras Impulsadas')+
+p_impulseByPosNames <- ggplot(mlb_Hitting, aes(x = AB, y=RBI, label=PLAYER, color=POS)) + 
+  geom_text(size=3) + xlab('Veces al bate') + ylab('Carreras Impulsadas')+
   ggtitle(label = "Carreras impulsadas vs Veces al bate") + theme_minimal() + 
   theme(plot.title = element_text(hjust = 0.5, color = "darkblue",  face = "bold.italic"),
         axis.title = element_text(size = 8, color = "blue", face = "bold.italic"))

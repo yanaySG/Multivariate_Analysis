@@ -139,8 +139,8 @@ variables <- data.frame(#"No." = c(1:18),
                                           "Tres strikes en un turno al bate",
                                           "Número de veces que un jugador pasa de una base a otra sin que lo tomen out",
                                           "Número de veces que un jugador es puesto out en un intento de robo de base",
-                                          "Indica el porcentaje entre la cantidad de hits y el número de turnos al bate: *AVG=H/AB*. Se considera un buen average a partir de los *.300* ",
-                                          "Porciento que da una medida de la capacidad  del bateador para llegar a alguna base. Calcula la relación entre *(H+BB+HBP)/(AB+BB+HBP+SF)* donde HBP (Hit By Pitch) es la cantidad de veces que el bateador es golpeado por el lanzador y SF (Sacrifice Fly) es la cantidad de veces que un jugador batea una bola elevada que eventualmente será out pero que sirve para que otro jugador adelante una base. Un buen OBP es de *.333*",
+                                          "Habilidad de un pelotero para conectar hits. Indica el porcentaje entre la cantidad de hits y el número de turnos al bate: *AVG=H/AB*. Se considera un excelente average a partir de los *.300* ",
+                                          "Capacidad  del bateador para llegar a alguna base. Calcula la relación entre *(H+BB+HBP)/(AB+BB+HBP+SF)* donde HBP (Hit By Pitch) es la cantidad de veces que el bateador es golpeado por el lanzador y SF (Sacrifice Fly) es la cantidad de veces que un jugador batea una bola elevada que eventualmente será out pero que sirve para que otro jugador adelante una base. Un buen OBP está por encima de *.333*",
                                           "Medida del poder del bateador. Representa el porcentaje de los turnos al bate con respecto a las bases alcanzadas. Se divide la cantidad total de bases recorridas (TB) por las veces al bate. El slugging otorga más peso a los extrabases, es decir, se asigna uno por cada sencillo (1B), dos por cada doble (2B), tres por cada triple (3B) y cuatro por cada home run (HR). Las fórmulas para el cálculo son: Se *TB=(1B)+(2x2B)+(3x3B)+(4xHR)* y *SLG=TB/AB*, Se considera un buen slugging a partir de los *.500* ", 
                                           "Mide la contribución total de un jugador, toma en cuenta su poder y su capacidad de embasarse. Su fórmula es *OPS=OBP+SLG*. Un buen OPS debe ser de *.753*"
                                           ))
@@ -296,17 +296,17 @@ corrplot(cor_matrix,
 
 ##### Observaciones
 Gráfica de *Número de juegos (G)* vs *promedio de bateo (AVG)*. El color está representado por las posiciones del terreno *(POS)* y tamaño por *Strike Outs (SO)*
-```{r echo=FALSE, results='asis'}
+```{r echo=FALSE, results='asis', message=FALSE}
 # print(p_playerByPos)
 ggplotly(p_playerByPos, tooltip = c("text", "label"))
 ```
 Las posiciones se muestran bastante parejas en respecto a cantidad de juegos, promedio de bateo y strike outs.
 
 ##### Nombres de jugadores
-* Misma gráfica pero mostrando el nombre de los jugadores.
+Misma gráfica pero mostrando el nombre de los jugadores.
 ```{r echo=FALSE, results='asis'}
 # print(p_playerByPosNames)
-ggplotly(p_playerByPosNames)
+ggplotly(p_playerByPosNames, tooltip = "label")
 ```
 Los mejores jugadores con un *AVG* mayor que 350 son Joe.
 
@@ -315,11 +315,11 @@ Los mejores jugadores con un *AVG* mayor que 350 son Joe.
 
 
 #### ¿Cómo impulsan por posiciones? {.tabset}
-Los jugadores que batean en un momento decisivo del juego ayudando a que otros que estén en el campo logren obtener bases, son jugadores muy valiosos. En muchos casos hacen un bateo de “sacrificio” que implica que él pierde la posibilidad de llegar a primera base para que otro jugador pueda avanzar en el terreno. Esto es lo que almacena la variable *RBI* y vale la pena estudiarla. 
+Los jugadores que batean en un momento decisivo del juego ayudando a que otros que estén en el campo logren obtener bases, son jugadores muy valiosos. En muchos casos hacen un *bateo de sacrificio* que implica que él pierde la posibilidad de llegar a primera base para que otro jugador pueda avanzar en el terreno. Esto es lo que almacena la variable *RBI* y vale la pena estudiarla. 
 
 ##### Observaciones
-La Gráfica muestra *Carreras Impulsadas (RBI)* contra los *Strike Outs (SO)*. Se quiere observar la relación entre las veces que en la posición de bateo el jugador impulsa o se poncha. El color está representado por las posiciones del terreno *(POS)* y tamaño por veces al bate *(AB)*. 
-```{r echo=FALSE, results='asis'}
+La Gráfica muestra *Carreras Impulsadas (RBI)* contra los *Veces al bate*. El color está representado por las posiciones del terreno *(POS)* y tamaño por veces al bate *(AB)*. 
+```{r echo=FALSE, results='asis', message=FALSE}
 # print(p_impulseByPos)
 ggplotly(p_impulseByPos, tooltip = c("text","label","x","y"))
 ```
@@ -328,11 +328,13 @@ Homogeneidad entre las posiciones. Relación lineal entre las variables con cier
 ##### Nombres de jugadores
 ```{r echo=FALSE, results='asis'}
 # print(p_impulseByPosNames)
-ggplotly(p_impulseByPosNames)
+ggplotly(p_impulseByPosNames, tooltip = c("label","x","y"))
 ```
 
 
 #### Relación de home runs y juegos {.tabset}
+
+
 
 ##### Observaciones
 ```{r echo=FALSE, results='asis'}
@@ -341,6 +343,7 @@ ggplotly(p_hrByG, tooltip = "label")
 ```
 
 ##### Nombres de jugadores
+Misma gráfica pero mostrando el nombre de los jugadores.
 ```{r echo=FALSE, results='asis'}
 # print(p_impulseByPosNames)
 ggplotly(p_hrByGNames)
