@@ -167,13 +167,20 @@ p_hrByPosNames <- ggplot(mlb_Hitting, aes(x = AB, y = HR, label=PLAYER, color=PO
 #como roban los bateadores las bases por posiciones 
 p_sbByPos <- ggplot(mlb_Hitting, aes(x = G, y =SB, color=POS, alpha=1.0, 
                                      size=R, label=PLAYER)) +
-  geom_point() + xlab('Juegos') + ylab('Bases Robadas')
+  geom_point(aes(text = PLAYER, label=AVG)) + xlab('Juegos') + ylab('Bases Robadas') + 
+  ggtitle(label = "Bases Robadas vs Juegos") + theme_minimal() + 
+  theme(plot.title = element_text(hjust = 0.5, color = "darkblue",  face = "bold.italic"),
+        axis.title = element_text(size = 8, color = "blue", face = "bold.italic"),
+        legend.position = "bottom") +
+  guides(alpha=FALSE) +
+  geom_smooth(method = "lm", se = FALSE, size=.5)
 
-p_sbByPosNames <- ggplot(mlb_Hitting, aes(x = G, y = SB, label=PLAYER)) + 
-  geom_text(size=3, col="blue") + xlab('Juegos') + ylab('Bases Robadas')
 
-
-
+p_sbByPosNames <- ggplot(mlb_Hitting, aes(x = G, y = SB, label=PLAYER, color=POS)) + 
+  geom_text(size=3) + xlab('Juegos') + ylab('Bases Robadas') +
+  ggtitle(label = "Bases Robadas vs Juegos") + theme_minimal() + 
+  theme(plot.title = element_text(hjust = 0.5, color = "darkblue",  face = "bold.italic"),
+        axis.title = element_text(size = 8, color = "blue", face = "bold.italic"))
 
 
 

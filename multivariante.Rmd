@@ -221,6 +221,8 @@ En general curvas asimétricas, con excepción de las variables calculadas (*AVG
 print(hist)
 ```
 
+---
+
 #### Boxplots
 Cajas generalmente bajas y bastantes outliers superiores en todas las variables. Estos outliers representan jugadores que destacan del resto y que por consiguiente son muy buenos en base al indicador o variable observada. 
 Es importante tener en cuenta que las variables *SO (Strike Out)* y *CS (Catch Stealing)* tienen efecto inverso en realción a ganar el juego, es decir que a mayor valor de estas variables más negativas resultan. 
@@ -228,15 +230,15 @@ Es importante tener en cuenta que las variables *SO (Strike Out)* y *CS (Catch S
 print(bxp2)
 ```
  
+---
+ 
 #### Boxplots2
 Las variables se encuentran rangos de valores muy diferentes, esto puede afectar al cálculo posterior de las componentes principales. Se necesitará estandarizar la matriz de datos.
 ```{r echo=FALSE, results='asis', fig.height=4}
 ggplotly(bxp)
 ```
 
-
-</div>
-
+---
 
 
 ### Análisis bivariante
@@ -272,9 +274,6 @@ kable(negative_correlated, "html", caption = "Corración negativa",
 ```
 
 
-
-
-
 ```{r echo=FALSE, results='asis'}
 
 corrplot(cor_matrix,
@@ -289,65 +288,62 @@ corrplot(cor_matrix,
 ```
 
 
-### Algunos insigths relevantes
+### Algunos insigths interesantes
 
+<br>
 
-#### ¿Cómo batean los jugadores por posiciones? {.tabset}
+#### 1. ¿Cómo batean los jugadores por posiciones? {.tabset}
 
 ##### Observaciones
-Gráfica de *Número de juegos (G)* vs *promedio de bateo (AVG)*. El color está representado por las posiciones del terreno *(POS)* y tamaño por *Strike Outs (SO)*
+Gráfica de *Número de juegos (G)* vs *promedio de bateo (AVG)*. El color está representado por las posiciones del terreno *(POS)* y tamaño por *Average (AVG)*
 ```{r echo=FALSE, results='asis', message=FALSE}
-# print(p_playerByPos)
 ggplotly(p_playerByPos, tooltip = c("text", "label", "x" , "y"))
 ```
-Las posiciones se muestran bastante parejas en respecto a cantidad de juegos, promedio de bateo y strike outs.
+Se observa una relación lineal entre las variables  *G* y *AVG* con bastante dispersión. No se aprecia gran diferencia entre las *impulsadas* y las *posiciones*. Las pendientes de las líneas de tendencias son semejantes y bastante bajas. Las posiciones *Right fields (RF)* y *Of Fild (OF)* presentan pendientes muy bajas, implica que no tienen sufieicntes impulsadas por juegos.
+
+---
 
 ##### Nombres de jugadores
 Misma gráfica pero mostrando el nombre de los jugadores.
 ```{r echo=FALSE, results='asis'}
-# print(p_playerByPosNames)
-ggplotly(p_playerByPosNames ) %>%
-  # layout(hoverlabel=list(bgcolor="white"))
-  # layout(
-  #   hoverlabel=list(bgcolor="label")
-    # barmode = "stack" 
-    # hovermode = "x"
-  # )
-
-style(hoverlabel = "label", marker.color = "#232F34") 
-
+ggplotly(p_playerByPosNames, tooltip = c("text", "label", "x" , "y"))
 ```
-Los mejores jugadores con un *AVG* mayor que 350 son Joe.
+Los mejores jugadores tendrán mayor *AVG* por *juegos (G)*: Los mejores jugadores con un *AVG* mayor que 350 son Joe Jackson, Rogers Hornsby y Ty Cobb.
 
+---
 
-</div>
-
-
-#### ¿Cómo impulsan por posiciones? {.tabset}
+#### 2. ¿Cómo impulsan por posiciones? {.tabset}
 Los jugadores que batean en un momento decisivo del juego ayudando a que otros que estén en el campo logren obtener bases, son jugadores muy valiosos. En muchos casos hacen un *bateo de sacrificio* que implica que él pierde la posibilidad de llegar a primera base para que otro jugador pueda avanzar en el terreno. Esto es lo que almacena la variable *RBI* y vale la pena estudiarla. 
 
 ##### Observaciones
-La Gráfica muestra *Carreras Impulsadas (RBI)* contra los *Veces al bate*. El color está representado por las posiciones del terreno *(POS)* y tamaño por veces al bate *(AB)*. 
+La Gráfica muestra *Carreras Impulsadas (RBI)* contra las *Veces al bate*. El color está representado por las posiciones del terreno *(POS)* y tamaño por el average *(AVG)*. 
 ```{r echo=FALSE, results='asis', message=FALSE}
-# print(p_impulseByPos)
 ggplotly(p_impulseByPos, tooltip = c("text","label","x","y"))
 ```
-Homogeneidad entre las posiciones. Relación lineal entre las variables con cierta dispersión.
+Homogeneidad entre las posiciones, las líneas de tendencias tienen casi todas la misma pendiente, por tanto no influyen las *posiciones* en las *impulsadas*. Relación lineal entre las variables con cierta dispersión. 
+
+---
 
 ##### Nombres de jugadores
 ```{r echo=FALSE, results='asis'}
-# print(p_impulseByPosNames)
 ggplotly(p_impulseByPosNames, tooltip = c("label","x","y"))
 ```
+Los mejores jugadores tendrán más *impulsadas* por *veces al bate*: Bebe Ruth, Lou Gehrin, Albert Pujols, Alex Rodriguez y Barry Bonds. 
+
+---
 
 
-#### Relación de Home Runs y Veces al Bate {.tabset}
-Si bateador hace contacto con la pelota de una manera que le permita recorrer todas las bases y anotar una carrera se ha realizado un home run o cuadrangular. La forma más común es cuando el bateador golpea la pelota y la saca al exterior del campo de juego. Es uno de los aspectos más populares y difíciles para el bateador, es por ello que los jugadores que usualmente logran hacer este tipo de jugadas son muy valorados en el terreno.
+#### 3. Relación de Home Runs y Veces al Bate {.tabset}
+Si el bateador hace contacto con la pelota de manera que le permita recorrer tdas las bases y anotar una carrera, se ha realizado un home run o cuadrangular. La forma más común es cuando el bateador golpea la pelota y la saca al exterior del campo de juego. Es uno de los jugadas más populares y difíciles para el bateador, por ello los jugadores que usualmente logran hacer este tipo de jugadas son muy valorados en el terreno.
 
 ##### Observaciones
+La Gráfica muestra *Home runs (HR)* contra las *juegos (G)*. El color está representado por las posiciones del terreno *(POS)* y tamaño por el average *(AVG)*. 
 ```{r echo=FALSE, results='asis', message=FALSE}
 ggplotly(p_hrByPos, tooltip = c("text","label","x","y"))
 ```
+Mucha dispersión y aglomeración de datos por debajo de *400 HR*, esto se debe precisamente a lo difícil de anotar home runs. Las líneas de tendencia marcan los *HR* por posiciones: *los Tercera Base (3B)*, * Cathcers "C"*, *los Of Field OF* y *Right field RF* presentan una pendiente ligeramente mayor que el resto, por tanto en general son mejores anotando home runs. 
+
+---
 
 ##### Nombres de jugadores
 Misma gráfica pero mostrando el nombre de los jugadores.
@@ -355,24 +351,29 @@ Misma gráfica pero mostrando el nombre de los jugadores.
 # print(p_impulseByPosNames)
 ggplotly(p_hrByPosNames, tooltip = c("label","x","y")) 
 ```
+Los mejores jugadores tendrán más *home runs (eje y)* con menos *veces al bate (eje x)*. LOs mejores en este análisis son: Mark McGwire, Jim Thome, Sammy Sosa, ken Griffey, Baby Ruth, Barry Bonds.
 
+---
 
-#### Relación entre bases robadas y atrapados robando {.tabset}
+#### Relación entre bases robadas y número de juegos {.tabset}
 Robar una base es moverse de una base a otra aprovechando que el pitcher no tiene posibilidad en ese momento de darle out, generalmente esto ocurre cuando el pitcher se está preparando para lanzar la pelota al bateador. Para robar una base el jugador tiene que ser muy rápido, ágil y astuto para utilizar el momento justo para actuar, y al mismo tiempo evitar un strike out.
 
 ##### Observaciones
-```{r echo=FALSE, results='asis'}
-# print(p_impulseByPos)
+La Gráfica muestra *Bases robadas (SB)* contra las *juegos (G)*. El color está representado por las posiciones del terreno *(POS)* y tamaño por el average *(AVG)*. 
+```{r echo=FALSE, results='asis', message=FALSE}
 ggplotly(p_sbByPos, tooltip = "label")
 ```
+La gráfica muestra que la mayoría de los jugadores no roban demasiadas bases. Según las líneas de tendencia que indican las posiciones, los jugadores q más roban son el *Segunda Base (2B)*, *Left Field (LF)* y *Campo Corto (SS)*. 
+
+---
 
 ##### Nombres de jugadores
 ```{r echo=FALSE, results='asis'}
-# print(p_impulseByPosNames)
 ggplotly(p_sbByPosNames)
 ```
+Los mejores jugadores tendrán más *bases robadas (SB)* con menos *juegos realizados*. Los mejores en este análisis son: Rickey Henderson, Billy Hamilton, Vince Coleman, Arlie Latham.
 
-
+---
 
 ## Análisis multivariante
 
