@@ -121,7 +121,7 @@ variables <- data.frame(#"No." = c(1:18),
                                        "SB", "CS", "AVG", 
                                        "OBP", "SLG", "OPS"), 
                         "Significado" = c("Jugador", "Posición", "Games / Juegos", "At Bat / Al bate", "Runs / Carreras", "Hits", 
-                                          "two-base / Doble", "three-base hit / Triple", "Home run",
+                                          "two-base hit / Doble", "three-base hit / Triple", "Home run",
                                           "Run Batted In / Carreras Impulsadas", "Bases por Bola", "Strike Out o Out",
                                           "Stolen Base / Bases Robadas", "Caught Steeling / Atrapado Robando", "Average / Promedio de bateo",
                                           "On Base Percetage / Porcentaje de embasarse", "Slugging Percetage", "On-base percentage plus slugging"),
@@ -356,7 +356,7 @@ Los mejores jugadores tendrán más *home runs (eje y)* con menos *veces al bate
 ---
 
 #### Relación entre bases robadas y número de juegos {.tabset}
-Robar una base es moverse de una base a otra aprovechando que el pitcher no tiene posibilidad en ese momento de darle out, generalmente esto ocurre cuando el pitcher se está preparando para lanzar la pelota al bateador. Para robar una base el jugador tiene que ser muy rápido, ágil y astuto para utilizar el momento justo para actuar, y al mismo tiempo evitar un strike out.
+Robar una base es moverse de una base a otra aprovechando que el pitcher no tiene posibilidad en ese momento de darle out, generalmente esto ocurre cuando el pitcher se está preparando para lanzar la pelota al bateador. Para robar una base el jugador tiene que ser muy rápido, ágil y astuto para utilizar el momento justo para actuar, y al mismo tiempo evitar un out.
 
 ##### Observaciones
 La Gráfica muestra *Bases robadas (SB)* contra las *juegos (G)*. El color está representado por las posiciones del terreno *(POS)* y tamaño por el average *(AVG)*. 
