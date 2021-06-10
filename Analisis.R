@@ -98,8 +98,8 @@ more_corelated_pairs<-function(threshold=.9, sing="P"){ #"P"=positive, "N"=negat
   return(cor_df_final)
 }
 
-positive_correlated<-more_corelated_pairs()
-negative_correlated<-more_corelated_pairs(sing="N")
+# positive_correlated<-more_corelated_pairs()
+# negative_correlated<-more_corelated_pairs(sing="N")
 
 
 
@@ -229,68 +229,66 @@ pca <- FactoMineR::PCA(X=mlb_Hitting_reshape[,2:17], scale.unit = TRUE, ncp = 3,
 
 importance_of_components <- pca$eig %>% head(10) %>% round(3) %>% t()
 
-
-
-
+scrplot <- fviz_screeplot(pca)  # or fviz_eig(pca)
 
 
 # get_pca(pca3)#extrae información sobre las variables
 # get_pca_var(pca3)#idem arriba
 # get_pca_ind(pca3)#extrae información sobre las observaciones
 
-pca3$var
+pca$var
 
-fviz_eig(pca3) #vusualizar eigenvalores (scree plot)
-fviz_screeplot(pca3) #idem arriba
+fviz_eig(pca) #vusualizar eigenvalores (scree plot)
+fviz_screeplot(pca) #idem arriba
 #nota: screeplot muestra la variaza explicada de cada componente
 
-fviz_pca_ind(pca3) #representación de observaciones sobre componentes principales
-fviz_pca_ind(pca3,
+fviz_pca_ind(pca) #representación de observaciones sobre componentes principales
+fviz_pca_ind(pca,
              col.ind = "cos2", #color by the quality of representation
              gradient.cols=c("#00AFBB","#E7B800","#FC4E07"),
              repel = FALSE #avoid text overlapping
              ) 
 
-fviz_pca_var(pca3) #representación de variables sobre componentes principales
-fviz_pca_var(pca3, 
+fviz_pca_var(pca) #representación de variables sobre componentes principales
+fviz_pca_var(pca, 
              col.var = "contrib", #color by contribution to the pc
              gradient.cols=c("#00AFBB","#E7B800","#FC4E07"),
              repel = TRUE)
 
-fviz_pca_var(pca3, 
+fviz_pca_var(pca, 
              col.var = "cos2", #color by contribution to the pc
              geom.var = "arrow",
              gradient.cols=c("#00AFBB","#E7B800","#FC4E07"),
              repel = FALSE)
 
-fviz_contrib(pca3,choice = "var") # representa lo que contribyen las variables a la varianza explicada
-fviz_contrib(pca3,choice = "var", axes=2)
-fviz_contrib(pca3,choice = "var", axes=3)
+fviz_contrib(pca,choice = "var") # representa lo que contribyen las variables a la varianza explicada
+fviz_contrib(pca,choice = "var", axes=2)
+fviz_contrib(pca,choice = "var", axes=3)
 #nota: mientras más a la izquierda más contribuye a la varianza
 
 
-fviz_contrib(pca3,choice = "ind") #%>% ggplotly() #lo que contribuyen los individuos a la varianza explicada
+fviz_contrib(pca,choice = "ind") #%>% ggplotly() #lo que contribuyen los individuos a la varianza explicada
 #nota: mientras más a la izquierda más contribuye a la varianza
 
 
-fviz_pca_biplot(pca3, repel = FALSE,
+fviz_pca_biplot(pca, repel = FALSE,
                 col.var = "#2E9FDF", # Variables color
                 col.ind = "#696969"  # Individuals color
 )
 
 
-fviz_pca_biplot(pca3, repel = TRUE,
+fviz_pca_biplot(pca, repel = TRUE,
                 #geom= "point", #o text o geom=c("point", "text")
                 col.var = "#2E9FDF", # Variables color
                 col.ind = "#696969", # Individuals color
-                select.ind = list(contrib = 30)
+                select.ind = list(contrib = 30) 
 )
 
 
-grupo <- as.factor(dfforpca$POS)
+grupo <- as.factor(mlb_Hitting_reshape$POS)
 
 
-fviz_pca_ind(pca3,
+fviz_pca_ind(pca,
              col.ind = grupo, # color by groups
              # palette = c("#00AFBB", "#FC4E07","#696969"),
              addEllipses = TRUE, # Concentration ellipses
@@ -299,14 +297,14 @@ fviz_pca_ind(pca3,
              repel = TRUE
 ) #%>% ggplotly() 
 
-fviz_ellipses(pca3, 
+fviz_ellipses(pca, 
               geom = c("point","text"),
               habillage=grupo, 
               # habillage=1:4, 
               palette = "Dark2",
               repel = TRUE) 
 
-fviz_pca_biplot(pca3,
+fviz_pca_biplot(pca,
                 col.ind = grupo, # color by groups
                 # palette = c("#00AFBB", "#FC4E07","#696969"),
                 addEllipses = TRUE, # Concentration ellipses
@@ -314,12 +312,6 @@ fviz_pca_biplot(pca3,
                 legend.title = "Groups",
                 repel = FALSE
 )
-
-boxplot(dfforpca[,-1])
-
-
-
-
 
 
 
@@ -331,128 +323,128 @@ boxplot(dfforpca[,-1])
 
 ##########################
 
-screeplot(pca, main='scatterplot',col='blue',type='barplot',pch=19)
-plot(pca,type="lines") # scree plot
-
-eigen(cor_matrix) #the same, with numeric format
-eigen(cor_matrix)$values #eigenvalues denote variances
-eigen(cor_matrix)$vectors %>% round(2) #eigenvectors denote loadings
-cumsum(pca$sdev^2)/dim(mlb_Hitting)[2]
-
-biplot(pca)
-
-pca$rotation[,1]
-
-#fist component
-barplot(-1*pca$rotation[,1], las=2, col="blue", main = "PCA1") #jugadores que más batean y que más impulsan
-
-players<-mlb_Hitting[,1]
-players[order(pca$x[,1])][1:10]
-
-qplot(-pca$x[,1],mlb_Hitting$G,label=players) +
-  labs(title="Performance", x="PC1", y="") + theme_bw() +
-  theme(legend.position = "bottom", panel.border = element_blank()) +
-  geom_text(size=3, hjust=0, vjust=0, check_overlap = FALSE)
-
-#segunda componente
-barplot(-1*pca$rotation[,2], las=2, col="blue", main = "PCA2" ) #
-players[order(pca$x[,2])][1:10]
-
-qplot(-pca$x[,2],mlb_Hitting$G,label=players) +
-  labs(title="Performance", x="PC1", y="") + theme_bw() +
-  theme(legend.position = "bottom", panel.border = element_blank()) +
-  geom_text(size=3, hjust=0, vjust=0, check_overlap = FALSE)
-
-#tercera componente
-barplot(-1*pca$rotation[,3], las=2, col="blue", main = "PCA3" ) #
-players[order(pca$x[,3])][1:10]
-
-qplot(-pca$x[,3],mlb_Hitting$G,label=players) +
-  labs(title="Performance", x="PC1", y="") + theme_bw() +
-  theme(legend.position = "bottom", panel.border = element_blank()) +
-  geom_text(size=3, hjust=0, vjust=0, check_overlap = FALSE)
-
-pairs(pca$rotation[,1:3], panel = function(x,y) text(x,y, labels = names(mlb_Hitting)))
-
-# primeras 2 componentes
-qplot(-pca$x[,1],-pca$x[,2],label=players) + labs(title="PCA", x="PC1", y="PC2") +
-  theme_bw() + theme(legend.position="bottom", panel.border = element_blank()) +
-  geom_text(size=3, hjust=0, vjust=0, check_overlap = FALSE) #las primeras 2 componentes son independientes
-
-# PCA Variable Factor Map
-library(FactoMineR)
-result <- PCA(mlb_Hitting[,3:18]) # graphs generated automatically
-
-##### Factor analysis: MLE ####
-# Note: MLE always scales the data.
-
-# Number of Factors to Extract
-library(nFactors)
-ev <- eigen(cor(mlb_Hitting[,3:18])) # get eigenvalues
-ap <- parallel(subject=nrow(mlb_Hitting[,3:18]),var=ncol(mlb_Hitting[,3:18]),
-               rep=100,cent=.05)
-nS <- nScree(x=ev$values, aparallel=ap$eigen$qevpea)
-plotnScree(nS)
-
-# with varimax rotation
-AF.varimax <- factanal(mlb_Hitting[,3:18], factors = 3, rotation="varimax",  method="mle",
-                       scores="regression", lower = 0.1)
-print(AF.varimax,digits=5,cutoff=.22,sort=T)
-
-loadings <- AF.varimax$loadings
-loadings
-plot(loadings, type="n") #blank plot to add names in next line
-text(loadings,labels=names(mlb_Hitting[,3:18]),
-     cex=.8, col = "blue") # add variable names
-
-par(mfrow=c(2,2))
-barplot(AF.varimax$loadings[,1], names=F, las=2, col=rainbow(9), ylim = c(-1, 1))
-barplot(AF.varimax$loadings[,2], las=2, col=rainbow(9), ylim = c(-1, 1))
-barplot(AF.varimax$loadings[,3], las=2, col=rainbow(9), ylim = c(-1, 1))
-dev.off()
-
-## Varianza específica
-VS <- diag(AF.varimax$uniquenesses)
-VS
-diag(VS)
-mean(1-diag(VS)/diag(cor(mlb_Hitting[,3:18])))
-
-# varianza compartida (Comunalidad)
-VC <-1-diag(VS)
-VC
-
-#factor 1: jugadores de contacto
-qplot(AF.varimax$scores[,1],mlb_Hitting$G,label=players) +
-  labs(title="Performance", x="FACTOR1. Jugadores de contacto", y="") + theme_bw() +
-  theme(legend.position = "bottom", panel.border = element_blank()) +
-  geom_text(size=3, hjust=0, vjust=0, check_overlap = FALSE)
-
-#factor 2: jugadores de poder
-qplot(AF.varimax$scores[,2],mlb_Hitting$G,label=players) +
-  labs(title="Performance", x="FACTOR2. Jugadores de poder", y="") + theme_bw() +
-  theme(legend.position = "bottom", panel.border = element_blank()) +
-  geom_text(size=3, hjust=0, vjust=0, check_overlap = FALSE)
-
-#factor 3: jugadores oportunos
-qplot(AF.varimax$scores[,3],mlb_Hitting$G,label=players) +
-  labs(title="Performance", x="FACTOR3. Jugadores oportunos", y="") + theme_bw() +
-  theme(legend.position = "bottom", panel.border = element_blank()) +
-  geom_text(size=3, hjust=0, vjust=0, check_overlap = FALSE)
-
-# Scores
-plot(AF.varimax$scores[,1],AF.varimax$scores[,2],xlab="First factor",ylab="Second factor",
-     main="Scores",pch=19,col="blue")
-
-plot(AF.varimax$scores[,1],AF.varimax$scores[,2],xlab="First factor",ylab="Second factor",
-     main="Scores", type="n")
-text(AF.varimax$scores[,c(1,2)],labels=mlb_Hitting[,1],pos = 4, col="blue")
-
-
-# Plot the scatter plot between the loadings:
-qplot(AF.varimax$loadings[,1], AF.varimax$loadings[,2], label="") +
-  labs(title="First two loadings", x="L1", y="L2") +
-  geom_text(size=3, hjust=-.5, vjust=-.3)
-# nonlinear relationship between players in this 2D-factor space
-
+# screeplot(pca, main='scatterplot',col='blue',type='barplot',pch=19)
+# plot(pca,type="lines") # scree plot
+# 
+# eigen(cor_matrix) #the same, with numeric format
+# eigen(cor_matrix)$values #eigenvalues denote variances
+# eigen(cor_matrix)$vectors %>% round(2) #eigenvectors denote loadings
+# cumsum(pca$sdev^2)/dim(mlb_Hitting)[2]
+# 
+# biplot(pca)
+# 
+# pca$rotation[,1]
+# 
+# #fist component
+# barplot(-1*pca$rotation[,1], las=2, col="blue", main = "PCA1") #jugadores que más batean y que más impulsan
+# 
+# players<-mlb_Hitting[,1]
+# players[order(pca$x[,1])][1:10]
+# 
+# qplot(-pca$x[,1],mlb_Hitting$G,label=players) +
+#   labs(title="Performance", x="PC1", y="") + theme_bw() +
+#   theme(legend.position = "bottom", panel.border = element_blank()) +
+#   geom_text(size=3, hjust=0, vjust=0, check_overlap = FALSE)
+# 
+# #segunda componente
+# barplot(-1*pca$rotation[,2], las=2, col="blue", main = "PCA2" ) #
+# players[order(pca$x[,2])][1:10]
+# 
+# qplot(-pca$x[,2],mlb_Hitting$G,label=players) +
+#   labs(title="Performance", x="PC1", y="") + theme_bw() +
+#   theme(legend.position = "bottom", panel.border = element_blank()) +
+#   geom_text(size=3, hjust=0, vjust=0, check_overlap = FALSE)
+# 
+# #tercera componente
+# barplot(-1*pca$rotation[,3], las=2, col="blue", main = "PCA3" ) #
+# players[order(pca$x[,3])][1:10]
+# 
+# qplot(-pca$x[,3],mlb_Hitting$G,label=players) +
+#   labs(title="Performance", x="PC1", y="") + theme_bw() +
+#   theme(legend.position = "bottom", panel.border = element_blank()) +
+#   geom_text(size=3, hjust=0, vjust=0, check_overlap = FALSE)
+# 
+# pairs(pca$rotation[,1:3], panel = function(x,y) text(x,y, labels = names(mlb_Hitting)))
+# 
+# # primeras 2 componentes
+# qplot(-pca$x[,1],-pca$x[,2],label=players) + labs(title="PCA", x="PC1", y="PC2") +
+#   theme_bw() + theme(legend.position="bottom", panel.border = element_blank()) +
+#   geom_text(size=3, hjust=0, vjust=0, check_overlap = FALSE) #las primeras 2 componentes son independientes
+# 
+# # PCA Variable Factor Map
+# library(FactoMineR)
+# result <- PCA(mlb_Hitting[,3:18]) # graphs generated automatically
+# 
+# ##### Factor analysis: MLE ####
+# # Note: MLE always scales the data.
+# 
+# # Number of Factors to Extract
+# library(nFactors)
+# ev <- eigen(cor(mlb_Hitting[,3:18])) # get eigenvalues
+# ap <- parallel(subject=nrow(mlb_Hitting[,3:18]),var=ncol(mlb_Hitting[,3:18]),
+#                rep=100,cent=.05)
+# nS <- nScree(x=ev$values, aparallel=ap$eigen$qevpea)
+# plotnScree(nS)
+# 
+# # with varimax rotation
+# AF.varimax <- factanal(mlb_Hitting[,3:18], factors = 3, rotation="varimax",  method="mle",
+#                        scores="regression", lower = 0.1)
+# print(AF.varimax,digits=5,cutoff=.22,sort=T)
+# 
+# loadings <- AF.varimax$loadings
+# loadings
+# plot(loadings, type="n") #blank plot to add names in next line
+# text(loadings,labels=names(mlb_Hitting[,3:18]),
+#      cex=.8, col = "blue") # add variable names
+# 
+# par(mfrow=c(2,2))
+# barplot(AF.varimax$loadings[,1], names=F, las=2, col=rainbow(9), ylim = c(-1, 1))
+# barplot(AF.varimax$loadings[,2], las=2, col=rainbow(9), ylim = c(-1, 1))
+# barplot(AF.varimax$loadings[,3], las=2, col=rainbow(9), ylim = c(-1, 1))
+# dev.off()
+# 
+# ## Varianza específica
+# VS <- diag(AF.varimax$uniquenesses)
+# VS
+# diag(VS)
+# mean(1-diag(VS)/diag(cor(mlb_Hitting[,3:18])))
+# 
+# # varianza compartida (Comunalidad)
+# VC <-1-diag(VS)
+# VC
+# 
+# #factor 1: jugadores de contacto
+# qplot(AF.varimax$scores[,1],mlb_Hitting$G,label=players) +
+#   labs(title="Performance", x="FACTOR1. Jugadores de contacto", y="") + theme_bw() +
+#   theme(legend.position = "bottom", panel.border = element_blank()) +
+#   geom_text(size=3, hjust=0, vjust=0, check_overlap = FALSE)
+# 
+# #factor 2: jugadores de poder
+# qplot(AF.varimax$scores[,2],mlb_Hitting$G,label=players) +
+#   labs(title="Performance", x="FACTOR2. Jugadores de poder", y="") + theme_bw() +
+#   theme(legend.position = "bottom", panel.border = element_blank()) +
+#   geom_text(size=3, hjust=0, vjust=0, check_overlap = FALSE)
+# 
+# #factor 3: jugadores oportunos
+# qplot(AF.varimax$scores[,3],mlb_Hitting$G,label=players) +
+#   labs(title="Performance", x="FACTOR3. Jugadores oportunos", y="") + theme_bw() +
+#   theme(legend.position = "bottom", panel.border = element_blank()) +
+#   geom_text(size=3, hjust=0, vjust=0, check_overlap = FALSE)
+# 
+# # Scores
+# plot(AF.varimax$scores[,1],AF.varimax$scores[,2],xlab="First factor",ylab="Second factor",
+#      main="Scores",pch=19,col="blue")
+# 
+# plot(AF.varimax$scores[,1],AF.varimax$scores[,2],xlab="First factor",ylab="Second factor",
+#      main="Scores", type="n")
+# text(AF.varimax$scores[,c(1,2)],labels=mlb_Hitting[,1],pos = 4, col="blue")
+# 
+# 
+# # Plot the scatter plot between the loadings:
+# qplot(AF.varimax$loadings[,1], AF.varimax$loadings[,2], label="") +
+#   labs(title="First two loadings", x="L1", y="L2") +
+#   geom_text(size=3, hjust=-.5, vjust=-.3)
+# # nonlinear relationship between players in this 2D-factor space
+# 
 
 

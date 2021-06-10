@@ -243,13 +243,16 @@ ggplotly(bxp)
 
 ### Análisis bivariante
 
-Se analiza el dataset para encontrar correlaciones por pares de variables utilizando un threshold de 0.9 
+
+
+Se analiza el dataset para encontrar correlaciones por pares de variables utilizando un threshold de `r threshold_corr = 0.85` `r threshold_corr`  
 
 ```{r echo=FALSE, results='asis'}
 
-threshold = .75
+# threshold_corr = .85
 
-# if(positive_correlated)
+positive_correlated<-more_corelated_pairs(threshold = threshold_corr)
+negative_correlated<-more_corelated_pairs(sing="N", threshold = threshold_corr)
 
 add_desc <- function(x){
   meaning <- variables[variables$Variable %in% x,"Significado"]
@@ -361,9 +364,29 @@ Los mejores jugadores tendrán más *bases robadas (SB)* con menos *juegos reali
 
 El Análisis de Componentes Principales (PCA) es una técnica estadística de reducción de la dimensión (número de variables). Es decir, ante un banco de datos con muchas variables, el objetivo será reducirlas a un menor número perdiendo la menor cantidad de información posible. Los nuevos componentes principales serán una combinación lineal de las variables originales, y además serán independientes entre sí.
 
-Se utilizan las técnicas de PCA si existen altas correlaciones entre las variables, ya que esto es indicativo de que existe información redundante y, por tanto, pocos factores explicarán gran parte de la variabilidad total. Tal como se ha visto anteriormente el dataset objeto de estudio tiene altas correlaciones entre sus variables. 
+Se utilizan las técnicas de PCA si existen altas correlaciones entre las variables, ya que esto es indicativo de que existe información redundante y, por tanto, pocos factores explicarán gran parte de la variabilidad total.  
 
-La elección de las componentes se realiza de tal forma que la primera recoja la mayor proporción posible de la variabilidad original; la segunda componente debe recoger la máxima variabilidad posible no recogida por el primero, y así sucesivamente. Del total de factores se elegirán aquéllos que recojan el porcentaje de variabilidad que se considere suficiente. A éstos se les denomina componentes principales del dataset.
+La elección de las componentes se realiza de tal forma que la primera recoja la mayor proporción posible de la variabilidad original; la segunda componente recoge la máxima variabilidad posible no recogida por la primera, y así sucesivamente. Del total de factores se elegirán aquéllos que recojan el porcentaje de variabilidad que se considere suficiente. A éstos se les denomina componentes principales del dataset.
+
+#### **Variabilidad de las componenes**
+
+La proporción de variabilidad retenida por los componentes principales se puede extraer mediante valores propios *(eigen values)*. Los datos de la varianza son muy importantes para saber cuántas componentes principales serán utilizados para el análisis. 
+
+**¿Cómo saber cuantas componentes escoger?** Componentes con un valor propio > 1 representan más varianza de la que tiene en cuenta una de las variables originales en los datos estandarizados. Ésto, junto a la varianza acumulada, son los parámetros utilizados como punto de corte para determinar las componentes a escoger.
+
+
+```{r echo=FALSE, results='asis'}
+kable(importance_of_components, "html", caption = "Importance of components",
+      table.attr = "style='width:100%;'") %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover"),
+        position = "center", font_size = 11)
+```
+
+```{r echo=FALSE, results='asis', , message=FALSE}
+ggplotly(scrplot)
+```
+
+
 
 
 *WORK IN PROGRESS*
