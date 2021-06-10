@@ -217,25 +217,26 @@ p_sbByPosNames <- ggplot(mlb_Hitting, aes(x = G, y = SB, label=PLAYER, color=POS
 # 
 
 
-library(FactoMineR)
-
 
 #otra función PCA de Factorminer con resultados más detallados
-dfforpca <- mlb_Hitting
-dfforpca <- dfforpca[!duplicated(dfforpca$PLAYER),]
-dfforpca <- textshape::column_to_rownames(dfforpca, loc = 1)
+library(FactoMineR)
+library(factoextra) 
 
-pca3<-FactoMineR::PCA(X=dfforpca[,2:17],ncp = 3, graph = FALSE)
+#create new data frame for pca adding names to index
+mlb_Hitting_reshape <- textshape::column_to_rownames(mlb_Hitting, loc = 1)
+
+pca <- FactoMineR::PCA(X=mlb_Hitting_reshape[,2:17], scale.unit = TRUE, ncp = 3, graph = FALSE)
+
+importance_of_components <- pca$eig %>% head(10) %>% round(3) %>% t()
 
 
-print(pca3)
-head(pca3$eig)
 
-library(factoextra) #vamos a sacar de forma más eficiente la información de un objeto PCA
 
-get_pca(pca3)#extrae información sobra las variables
-get_pca_var(pca3)#idem arriba
-get_pca_ind(pca3)#extrae información sobre las observaciones
+
+
+# get_pca(pca3)#extrae información sobre las variables
+# get_pca_var(pca3)#idem arriba
+# get_pca_ind(pca3)#extrae información sobre las observaciones
 
 pca3$var
 
