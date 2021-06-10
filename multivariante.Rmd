@@ -321,7 +321,7 @@ La Gráfica muestra *Home runs (HR)* contra las *juegos (G)*. El color está rep
 ```{r echo=FALSE, results='asis', message=FALSE}
 ggplotly(p_hrByPos, tooltip = c("text","label","x","y"))
 ```
-Mucha dispersión y aglomeración de datos por debajo de *400 HR*, esto se debe precisamente a lo difícil de anotar home runs. Las líneas de tendencia marcan los *HR* por posiciones: *los Tercera Base (3B)*, * Cathcers "C"*, *Of Field OF* y *Right field RF* presentan una pendiente ligeramente superior al resto, por tanto en general son mejores anotando home runs. 
+Mucha dispersión y aglomeración de datos por debajo de *400 HR*, esto se debe precisamente a lo difícil de anotar home runs. Las líneas de tendencia marcan los *HR* por posiciones: *Tercera Base (3B)*, *Cathcers (C)*, *Of Field (OF)* y *Right field (RF)* presentan una pendiente ligeramente superior al resto, por tanto en general son mejores anotando home runs. 
 
 ---
 
@@ -358,6 +358,13 @@ Los mejores jugadores tendrán más *bases robadas (SB)* con menos *juegos reali
 ## Análisis multivariante
 
 ### Análisis de componenes principales (PCA) 
+
+El Análisis de Componentes Principales (PCA) es una técnica estadística de reducción de la dimensión (número de variables). Es decir, ante un banco de datos con muchas variables, el objetivo será reducirlas a un menor número perdiendo la menor cantidad de información posible. Los nuevos componentes principales serán una combinación lineal de las variables originales, y además serán independientes entre sí.
+
+Se utilizan las técnicas de PCA si existen altas correlaciones entre las variables, ya que esto es indicativo de que existe información redundante y, por tanto, pocos factores explicarán gran parte de la variabilidad total. Tal como se ha visto anteriormente el dataset objeto de estudio tiene altas correlaciones entre sus variables. 
+
+La elección de las componentes se realiza de tal forma que la primera recoja la mayor proporción posible de la variabilidad original; la segunda componente debe recoger la máxima variabilidad posible no recogida por el primero, y así sucesivamente. Del total de factores se elegirán aquéllos que recojan el porcentaje de variabilidad que se considere suficiente. A éstos se les denomina componentes principales del dataset.
+
 
 *WORK IN PROGRESS*
 

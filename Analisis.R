@@ -184,43 +184,40 @@ p_sbByPosNames <- ggplot(mlb_Hitting, aes(x = G, y = SB, label=PLAYER, color=POS
 
 
 
-
-
-
-
-
-
 ### MULTIVARIATE ANALYSIS ### 
 
 # PCA
-pca <- prcomp(mlb_Hitting[,3:18], scale=TRUE)
-summary(pca)
+# pca <- prcomp(mlb_Hitting[,3:18], scale=TRUE)
+# summary(pca)
+# 
+# 
+# 
+# ########################## testing some pca functions
+# 
+# names(pca)
+# head(pca$rotation) #eigenvalores (peso de cada componente para cada variable)
+# dim(pca$rotation) #numero de componentes diferentes
+# head(pca$x) #los vectores de los scores
+# pca$sdev #desviación típica
+# pca$sdev^2 # varianza
+# 
+# #comprobando la importancia de la primera componente
+# xx<-pca$x %>% as.data.frame()
+# mlb_Hitting_testingpca <- mlb_Hitting
+# mlb_Hitting_testingpca$PC1<-xx$PC1
+# mlb_Hitting_testingpca$PC2<-xx$PC2
+# mlb_Hitting_testingpca<-subset(mlb_Hitting_testingpca,select = -c(PLAYER, POS))
+# head(mlb_Hitting_testingpca)
+# cor(mlb_Hitting_testingpca)
+# 
+# 
+# # otra función 
+# pca2<-princomp(mlb_Hitting[,3:18], cor = TRUE)
+# names(pca2)
+# 
 
 
-
-########################## testing some pca functions
-
-names(pca)
-head(pca$rotation) #eigenvalores (peso de cada componente para cada variable)
-dim(pca$rotation) #numero de componentes diferentes
-head(pca$x) #los vectores de los scores
-pca$sdev #desviación típica
-pca$sdev^2 # varianza
-
-#comprobando la importancia de la primera componente
-xx<-pca$x %>% as.data.frame()
-mlb_Hitting_testingpca <- mlb_Hitting
-mlb_Hitting_testingpca$PC1<-xx$PC1
-mlb_Hitting_testingpca$PC2<-xx$PC2
-mlb_Hitting_testingpca<-subset(mlb_Hitting_testingpca,select = -c(PLAYER, POS))
-head(mlb_Hitting_testingpca)
-cor(mlb_Hitting_testingpca)
-
-
-# otra función 
-pca2<-princomp(mlb_Hitting[,3:18], cor = TRUE)
-names(pca2)
-
+library(FactoMineR)
 
 
 #otra función PCA de Factorminer con resultados más detallados
