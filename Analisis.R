@@ -228,21 +228,15 @@ mlb_Hitting_reshape <- textshape::column_to_rownames(mlb_Hitting, loc = 1)
 pca <- FactoMineR::PCA(X=mlb_Hitting_reshape[,2:17], scale.unit = TRUE, ncp = 3, graph = FALSE)
 
 importance_of_components <- pca$eig %>% head(10) %>% round(3) %>% t() %>% as.data.frame()
+names(importance_of_components)<-importance_of_components%>%names()%>%gsub(" ", "_",.)
 cp_more_signif <- importance_of_components[,importance_of_components["eigenvalue",]>=1]
 
+# get_pca(pca3) # or get_pca_var(pca3) # get variables information
+# get_pca_ind(pca3) # get observations information 
 
-scrplot <- fviz_screeplot(pca)  # or fviz_eig(pca)
 
-
-# get_pca(pca3)#extrae información sobre las variables
-# get_pca_var(pca3)#idem arriba
-# get_pca_ind(pca3)#extrae información sobre las observaciones
-
-pca$var
-
-fviz_eig(pca) #vusualizar eigenvalores (scree plot)
-fviz_screeplot(pca) #idem arriba
-#nota: screeplot muestra la variaza explicada de cada componente
+# Visualisation
+scrplot <- fviz_screeplot(pca)  # or fviz_eig(pca) 
 
 fviz_pca_ind(pca) #representación de observaciones sobre componentes principales
 fviz_pca_ind(pca,

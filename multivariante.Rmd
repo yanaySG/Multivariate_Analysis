@@ -362,15 +362,15 @@ Los mejores jugadores tendrán más *bases robadas (SB)* con menos *juegos reali
 
 ### Análisis de componenes principales (PCA) 
 
-El Análisis de Componentes Principales (PCA) es una técnica estadística de reducción de la dimensión (número de variables). Es decir, ante un banco de datos con muchas variables, el objetivo será reducirlas a un menor número perdiendo la menor cantidad de información posible. Los nuevos componentes principales serán una combinación lineal de las variables originales, y además serán independientes entre sí.
+El Análisis de Componentes Principales (PCA) es una técnica estadística de reducción de la dimensión (número de variables). Es decir, ante un banco de datos con muchas variables, el objetivo será reducirlas a un menor número perdiendo la menor cantidad de información posible. Las nuevas componentes principales serán una combinación lineal de las variables originales e independientes entre sí. 
 
-Se utilizan las técnicas de PCA si existen altas correlaciones entre las variables, ya que esto es indicativo de que existe información redundante y, por tanto, pocos factores explicarán gran parte de la variabilidad total.  
+Se utilizan las técnicas de PCA si existen altas correlaciones entre las variables, ya que esto es indicativo de información redundante y, por tanto, pocos factores podrán explicar gran parte de la variabilidad total que recogen. El PCA ayuda a determinar si las variables son más o menos parecidas y si existe algún tipo de estructura o agrupación entre ellas.  
 
-La elección de las componentes se realiza de tal forma que la primera recoja la mayor proporción posible de la variabilidad original; la segunda componente recoge la máxima variabilidad posible no recogida por la primera, y así sucesivamente. Del total de factores se elegirán aquéllos que recojan el porcentaje de variabilidad que se considere suficiente. A éstos se les denomina componentes principales del dataset.
+Las componentes se van construyendo según el orden de importancia en cuanto a la variabilidad total, de tal forma que la primera recoge la mayor proporción posible de la variabilidad original; la segunda recoge la máxima variabilidad posible no recogida por la primera, y así sucesivamente. 
 
 #### **Variabilidad de las componenes**
 
-La proporción de variabilidad retenida por los componentes principales se puede extraer mediante valores propios *(eigen values)*. Los datos de la varianza son muy importantes para saber cuántas componentes principales serán utilizados para el análisis. 
+La proporción de variabilidad retenida por las componentes principales se puede extraer mediante los valores propios *(eigen values)*. Los datos de la varianza son muy importantes para saber cuántas componentes principales serán utilizadas para el análisis. 
 
 **¿Cómo saber cuantas componentes escoger?** Una componente con valor propio mayor que 1, indica que la componente representa más varianza de la que tiene en cuenta una de las variables originales en los datos estandarizados. Ésto se usa comunmente, junto a la *cumulative percentage of variance*, como punto de corte para determinar la cantidad de componentes a escoger.
 
@@ -379,15 +379,27 @@ kable(importance_of_components, "html", caption = "Importancia de las componenet
       table.attr = "style='width:100%;'") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover"),
         position = "center", font_size = 11)
+
+names(cp_more_signif)<-paste( "component", 1:(cp_more_signif%>%names()%>%length()) )
 ```
 
+Se puede escoger como punto de corte hasta la `r cp_more_signif %>% names() %>% last()` 
+```{r echo=FALSE, results='asis', message=FALSE}
 
+diff_comp1_comp2 <- importance_of_components$comp_1[1] - importance_of_components$comp_2[1]
+diff_comp2_comp3 <- importance_of_components$comp_2[1] - importance_of_components$comp_3[1]
+
+if(diff_comp1_comp2>4 & diff_comp2_comp3<1){ 
+  #The first component is very high with respect to the rest of them.
+  cat("La primera componente contiene una varianza bastante más elevada que el resto, por tanto tiene una mayor explicabilidad por sí sola.")
+}
+```
 
 ```{r echo=FALSE, results='asis', message=FALSE, warning=FALSE}
 ggplotly(scrplot)
 ```
 
-hasta la `r cp_more_signif %>% names() %>% last()`  
+
 
 
 
