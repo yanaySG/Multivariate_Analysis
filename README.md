@@ -1,4 +1,4 @@
-# Multivariate_Analysis
+# Scrapping and Multivariate Analysis of MLB Statistics
 Project Multivariate Analysis from AFI Finance school
 
 ## Data source
