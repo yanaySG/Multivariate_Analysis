@@ -227,7 +227,9 @@ mlb_Hitting_reshape <- textshape::column_to_rownames(mlb_Hitting, loc = 1)
 
 pca <- FactoMineR::PCA(X=mlb_Hitting_reshape[,2:17], scale.unit = TRUE, ncp = 3, graph = FALSE)
 
-importance_of_components <- pca$eig %>% head(10) %>% round(3) %>% t()
+importance_of_components <- pca$eig %>% head(10) %>% round(3) %>% t() %>% as.data.frame()
+cp_more_signif <- importance_of_components[,importance_of_components["eigenvalue",]>=1]
+
 
 scrplot <- fviz_screeplot(pca)  # or fviz_eig(pca)
 

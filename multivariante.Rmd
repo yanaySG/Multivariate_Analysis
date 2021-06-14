@@ -372,20 +372,22 @@ La elección de las componentes se realiza de tal forma que la primera recoja la
 
 La proporción de variabilidad retenida por los componentes principales se puede extraer mediante valores propios *(eigen values)*. Los datos de la varianza son muy importantes para saber cuántas componentes principales serán utilizados para el análisis. 
 
-**¿Cómo saber cuantas componentes escoger?** Componentes con un valor propio > 1 representan más varianza de la que tiene en cuenta una de las variables originales en los datos estandarizados. Ésto, junto a la varianza acumulada, son los parámetros utilizados como punto de corte para determinar las componentes a escoger.
+**¿Cómo saber cuantas componentes escoger?** Una componente con valor propio mayor que 1, indica que la componente representa más varianza de la que tiene en cuenta una de las variables originales en los datos estandarizados. Ésto se usa comunmente, junto a la *cumulative percentage of variance*, como punto de corte para determinar la cantidad de componentes a escoger.
 
-
-```{r echo=FALSE, results='asis'}
-kable(importance_of_components, "html", caption = "Importance of components",
+```{r echo=FALSE, results='asis', message=FALSE}
+kable(importance_of_components, "html", caption = "Importancia de las componenetes",
       table.attr = "style='width:100%;'") %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover"),
         position = "center", font_size = 11)
 ```
 
-```{r echo=FALSE, results='asis', , message=FALSE}
+
+
+```{r echo=FALSE, results='asis', message=FALSE, warning=FALSE}
 ggplotly(scrplot)
 ```
 
+hasta la `r cp_more_signif %>% names() %>% last()`  
 
 
 
