@@ -187,127 +187,171 @@ p_sbByPosNames <- ggplot(mlb_Hitting, aes(x = G, y = SB, label=PLAYER, color=POS
 ### MULTIVARIATE ANALYSIS ### 
 
 # PCA
-# pca <- prcomp(mlb_Hitting[,3:18], scale=TRUE)
-# summary(pca)
-# 
-# 
-# 
-# ########################## testing some pca functions
-# 
-# names(pca)
-# head(pca$rotation) #eigenvalores (peso de cada componente para cada variable)
-# dim(pca$rotation) #numero de componentes diferentes
-# head(pca$x) #los vectores de los scores
-# pca$sdev #desviación típica
-# pca$sdev^2 # varianza
-# 
-# #comprobando la importancia de la primera componente
-# xx<-pca$x %>% as.data.frame()
-# mlb_Hitting_testingpca <- mlb_Hitting
-# mlb_Hitting_testingpca$PC1<-xx$PC1
-# mlb_Hitting_testingpca$PC2<-xx$PC2
-# mlb_Hitting_testingpca<-subset(mlb_Hitting_testingpca,select = -c(PLAYER, POS))
-# head(mlb_Hitting_testingpca)
-# cor(mlb_Hitting_testingpca)
-# 
-# 
-# # otra función 
-# pca2<-princomp(mlb_Hitting[,3:18], cor = TRUE)
-# names(pca2)
-# 
+
+# There are two general methods to perform PCA in R :
+# Spectral decomposition which examines the covariances / correlations between variables
+# Singular value decomposition which examines the covariances / correlations between individuals
+# The function princomp() uses the spectral decomposition approach. 
+# The functions prcomp() and PCA()[FactoMineR] use the singular value decomposition (SVD).
 
 
 
-#otra función PCA de Factorminer con resultados más detallados
+
+# estandarización de los datos
+# matriz de correlaciones
+# eigen values
+# representación gráfica de los individuos (plano principal)
+# representación gráfica de cp1 vs cp2 con respecto a las variables originales 
+#    todas las variables que se encuentren cerca entre sí significa q están correlacionadas
+#    las variables muy alejadas entre sí (a 180 grados) están correlacionadas negativamente
+#    las variables que forman un ángulo de 90 grados no están correlacionadas
+# observar la gráfica en 3 dimensiones????
+# proyectar los datos originales sobre las nuevas dimensiones
+
+
+
+
+
+
 library(FactoMineR)
 library(factoextra) 
 
 #create new data frame for pca adding names to index
 mlb_Hitting_reshape <- textshape::column_to_rownames(mlb_Hitting, loc = 1)
 
-pca <- FactoMineR::PCA(X=mlb_Hitting_reshape[,2:17], scale.unit = TRUE, ncp = 3, graph = FALSE)
+mlb_PCA <- FactoMineR::PCA(X=mlb_Hitting_reshape[,2:17], scale.unit = TRUE, ncp = 10, graph = FALSE)
 
-importance_of_components <- pca$eig %>% head(10) %>% round(3) %>% t() %>% as.data.frame()
+
+importance_of_components <- mlb_PCA$eig %>% head(10) %>% round(3) %>% t() %>% as.data.frame()
 names(importance_of_components)<-importance_of_components%>%names()%>%gsub(" ", "_",.)
 cp_more_signif <- importance_of_components[,importance_of_components["eigenvalue",]>=1]
 
-# get_pca(pca3) # or get_pca_var(pca3) # get variables information
-# get_pca_ind(pca3) # get observations information 
+scrplot <- fviz_screeplot(mlb_PCA, linecolor = "darkred")   # or fviz_eig(...) 
+
+# variables
+
+head(mlb_PCA$var$coord)   # Coordinates of variables on the principal components
+head(mlb_PCA$var$cos2)    # Quality of variables on the factor map
+head(mlb_PCA$var$contrib) # Contributions of the variables to the principal components
+
+fviz_pca_var(mlb_PCA,            # graph of variables with principal components
+             col.var="contrib",  # color by contribution to the pc
+             gradient.cols=c(low="red", mid="lightblue", high="darkgreen"),
+             repel = TRUE) + theme_minimal()
+
+# Individuals
+
+head(mlb_PCA$ind$coord)   # Coordinates of individuals on the principal components
+head(mlb_PCA$ind$cos2)    # Cos2 : quality of individuals on the principal components
+head(mlb_PCA$ind$contrib) # Contribition of individuals to the princial components
+
+fviz_pca_ind(mlb_PCA,          # graph of individuals
+             col.ind = "cos2", # color by the quality of representation
+             repel = TRUE      # avoid text overlapping
+             ) + theme_minimal() +
+  scale_color_gradient2(low="red", mid="lightblue", high="darkgreen", midpoint=0.50) 
 
 
-# Visualisation
-scrplot <- fviz_screeplot(pca)  # or fviz_eig(pca) 
 
-fviz_pca_ind(pca) #representación de observaciones sobre componentes principales
-fviz_pca_ind(pca,
-             col.ind = "cos2", #color by the quality of representation
-             gradient.cols=c("#00AFBB","#E7B800","#FC4E07"),
-             repel = FALSE #avoid text overlapping
-             ) 
+# Individuals and variables
 
-fviz_pca_var(pca) #representación de variables sobre componentes principales
-fviz_pca_var(pca, 
-             col.var = "contrib", #color by contribution to the pc
-             gradient.cols=c("#00AFBB","#E7B800","#FC4E07"),
-             repel = TRUE)
-
-fviz_pca_var(pca, 
-             col.var = "cos2", #color by contribution to the pc
-             geom.var = "arrow",
-             gradient.cols=c("#00AFBB","#E7B800","#FC4E07"),
-             repel = FALSE)
-
-fviz_contrib(pca,choice = "var") # representa lo que contribyen las variables a la varianza explicada
-fviz_contrib(pca,choice = "var", axes=2)
-fviz_contrib(pca,choice = "var", axes=3)
-#nota: mientras más a la izquierda más contribuye a la varianza
-
-
-fviz_contrib(pca,choice = "ind") #%>% ggplotly() #lo que contribuyen los individuos a la varianza explicada
-#nota: mientras más a la izquierda más contribuye a la varianza
-
-
-fviz_pca_biplot(pca, repel = FALSE,
+fviz_pca_biplot(mlb_PCA, repel = FALSE,
                 col.var = "#2E9FDF", # Variables color
                 col.ind = "#696969"  # Individuals color
 )
 
-
-fviz_pca_biplot(pca, repel = TRUE,
-                #geom= "point", #o text o geom=c("point", "text")
+fviz_pca_biplot(mlb_PCA, 
                 col.var = "#2E9FDF", # Variables color
                 col.ind = "#696969", # Individuals color
-                select.ind = list(contrib = 30) 
+                select.ind = list(contrib = 30), # Top 20 contributing individuals
+                repel = TRUE
 )
 
 
+
+
+
+
+# barplot(-1*pca$rotation[,1], las=2, col="blue", main = "PCA1") #jugadores que más batean y que más impulsan
+barplot(mlb_PCA$var$contrib[,1], las=2, col="blue", main = "PCA1") #jugadores que más batean y que más impulsan
+
+players<-mlb_Hitting_reshape %>% rownames()
+# players[order(pca$ind$contrib[,1])][1:10]
+
+# qplot(pca$ind$contrib[,1],mlb_Hitting_reshape$G,label=players) +
+#   labs(title="Performance", x="PC1", y="") + theme_bw() +
+#   theme(legend.position = "bottom", panel.border = element_blank()) +
+#   geom_text(size=3, hjust=0, vjust=0, check_overlap = FALSE)
+
+# barplot(pca$var$contrib[,2], las=2, col="blue", main = "PCA2") #jugadores que más batean y que más impulsan
+
+# qplot(pca$ind$contrib[,2],mlb_Hitting_reshape$G,label=players) +
+#   labs(title="Performance", x="PC1", y="") + theme_bw() +
+#   theme(legend.position = "bottom", panel.border = element_blank()) +
+#   geom_text(size=3, hjust=0, vjust=0, check_overlap = FALSE)
+
+
+
+
+
+
+
+
+fviz_contrib(mlb_PCA,choice = "var") # representa lo que contribyen las variables a la varianza explicada
+fviz_contrib(mlb_PCA,choice = "var", axes=2)
+fviz_contrib(mlb_PCA,choice = "var", axes=3)
+#nota: mientras más a la izquierda más contribuye a la varianza
+
+
+fviz_contrib(mlb_PCA,choice = "ind") #%>% ggplotly() #lo que contribuyen los individuos a la varianza explicada
+#nota: mientras más a la izquierda más contribuye a la varianza
+
+
+
+
+
+
 grupo <- as.factor(mlb_Hitting_reshape$POS)
+# ggbiplot::ggbiplot(pca, 
+#                    #labels=rownames(mlb_Hitting_reshape), 
+#                    circle=TRUE, #add a circle to the center of the dataset
+#                    # obs.scale = 1 
+#                    # var.scale = 1,
+#                    # var.axes=FALSE,
+#                    groups=grupo, 
+#                    choices = c(1,2), ellipse=TRUE
+#                    ) +
+#   ggtitle("PCA of mtcars dataset")+
+#   theme_minimal()+
+#   theme(legend.position = "bottom")
 
 
-fviz_pca_ind(pca,
+
+fviz_pca_ind(mlb_PCA,
              col.ind = grupo, # color by groups
              # palette = c("#00AFBB", "#FC4E07","#696969"),
              addEllipses = TRUE, # Concentration ellipses
              ellipse.type = "confidence",
              legend.title = "Groups",
+             # habillage=mlb_Hitting_reshape$POS,
              repel = TRUE
 ) #%>% ggplotly() 
 
-fviz_ellipses(pca, 
-              geom = c("point","text"),
-              habillage=grupo, 
-              # habillage=1:4, 
-              palette = "Dark2",
-              repel = TRUE) 
+# fviz_ellipses(pca, 
+#               geom = c("point","text"),
+#               habillage=grupo, 
+#               # habillage=1:4, 
+#               palette = "Dark2",
+#               repel = TRUE) 
 
-fviz_pca_biplot(pca,
-                col.ind = grupo, # color by groups
-                # palette = c("#00AFBB", "#FC4E07","#696969"),
-                addEllipses = TRUE, # Concentration ellipses
-                ellipse.type = "confidence",
-                legend.title = "Groups",
-                repel = FALSE
-)
+# fviz_pca_biplot(pca,
+#                 col.ind = grupo, # color by groups
+#                 # palette = c("#00AFBB", "#FC4E07","#696969"),
+#                 addEllipses = TRUE, # Concentration ellipses
+#                 ellipse.type = "confidence",
+#                 legend.title = "Groups",
+#                 repel = FALSE
+# )
 
 
 
@@ -319,38 +363,34 @@ fviz_pca_biplot(pca,
 
 ##########################
 
-# screeplot(pca, main='scatterplot',col='blue',type='barplot',pch=19)
-# plot(pca,type="lines") # scree plot
-# 
-# eigen(cor_matrix) #the same, with numeric format
-# eigen(cor_matrix)$values #eigenvalues denote variances
-# eigen(cor_matrix)$vectors %>% round(2) #eigenvectors denote loadings
-# cumsum(pca$sdev^2)/dim(mlb_Hitting)[2]
-# 
-# biplot(pca)
-# 
-# pca$rotation[,1]
-# 
-# #fist component
-# barplot(-1*pca$rotation[,1], las=2, col="blue", main = "PCA1") #jugadores que más batean y que más impulsan
-# 
-# players<-mlb_Hitting[,1]
-# players[order(pca$x[,1])][1:10]
-# 
-# qplot(-pca$x[,1],mlb_Hitting$G,label=players) +
-#   labs(title="Performance", x="PC1", y="") + theme_bw() +
-#   theme(legend.position = "bottom", panel.border = element_blank()) +
-#   geom_text(size=3, hjust=0, vjust=0, check_overlap = FALSE)
-# 
-# #segunda componente
-# barplot(-1*pca$rotation[,2], las=2, col="blue", main = "PCA2" ) #
-# players[order(pca$x[,2])][1:10]
-# 
-# qplot(-pca$x[,2],mlb_Hitting$G,label=players) +
-#   labs(title="Performance", x="PC1", y="") + theme_bw() +
-#   theme(legend.position = "bottom", panel.border = element_blank()) +
-#   geom_text(size=3, hjust=0, vjust=0, check_overlap = FALSE)
-# 
+pca <- prcomp(mlb_Hitting[,3:18], scale=TRUE)
+
+screeplot(pca, main='scatterplot',col='blue',type='barplot',pch=19)
+plot(pca,type="lines") # scree plot
+
+
+biplot(pca)
+
+#fist component
+barplot(-1*pca$rotation[,1], las=2, col="blue", main = "PCA1") #jugadores que más batean y que más impulsan
+
+players<-mlb_Hitting[,1]
+players[order(pca$x[,1])][1:10]
+
+qplot(-pca$x[,1],mlb_Hitting$G,label=players) +
+  labs(title="Performance", x="PC1", y="") + theme_bw() +
+  theme(legend.position = "bottom", panel.border = element_blank()) +
+  geom_text(size=3, hjust=0, vjust=0, check_overlap = FALSE)
+
+#segunda componente
+barplot(-1*pca$rotation[,2], las=2, col="blue", main = "PCA2" ) #
+players[order(pca$x[,2])][1:10]
+
+qplot(-pca$x[,2],mlb_Hitting$G,label=players) +
+  labs(title="Performance", x="PC1", y="") + theme_bw() +
+  theme(legend.position = "bottom", panel.border = element_blank()) +
+  geom_text(size=3, hjust=0, vjust=0, check_overlap = FALSE)
+
 # #tercera componente
 # barplot(-1*pca$rotation[,3], las=2, col="blue", main = "PCA3" ) #
 # players[order(pca$x[,3])][1:10]
