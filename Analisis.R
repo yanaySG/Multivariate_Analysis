@@ -222,7 +222,8 @@ importance_of_components <- mlb_PCA$eig %>% head(10) %>% round(3) %>% t() %>% as
 names(importance_of_components)<-importance_of_components%>%names()%>%gsub(" ", "_",.)
 cp_more_signif <- importance_of_components[,importance_of_components["eigenvalue",]>=1]
 
-scrplot <- fviz_screeplot(mlb_PCA, linecolor = "darkred")   # or fviz_eig(...) 
+scrplot <- fviz_screeplot(mlb_PCA, linecolor = "darkred", 
+                          addlabels = TRUE)   # or fviz_eig(...) 
 
 # Variables
 
@@ -230,15 +231,21 @@ head(mlb_PCA$var$coord)   # Coordinates of variables on the principal components
 head(mlb_PCA$var$cos2)    # Quality of variables on the factor map
 head(mlb_PCA$var$contrib) # Contributions of the variables to the principal components
 
-fviz_pca_var(mlb_PCA,            # graph of variables with principal components
-             col.var="contrib",  # color by contribution to the pc
-             gradient.cols=c(low="red", mid="lightblue", high="darkgreen"),
-             repel = TRUE) + theme_minimal()
+library(plotly)
 
-fviz_pca_var(mlb_PCA,            # graph of variables with principal components
-             col.var="contrib",  # color by contribution to the pc
-             gradient.cols=c(low="red", mid="lightblue", high="darkgreen"),
-             axes = c(1,3), repel = TRUE) + theme_minimal()
+var_PC1yPC2 <- fviz_pca_var(mlb_PCA,            # graph of variables with principal components
+                            col.var="contrib",  # color by contribution to the pc
+                            gradient.cols=c(low="red", mid="lightblue", high="darkgreen"),
+                            title="PCA - Vars - Dim.1 vs Dim.2",
+                            repel = TRUE) + theme_minimal() 
+
+var_PC1yPC3 <- fviz_pca_var(mlb_PCA,            # graph of variables with principal components
+                            col.var="contrib",  # color by contribution to the pc
+                            gradient.cols=c(low="red", mid="lightblue", high="darkgreen"),
+                            title="PCA - Vars - Dim.1 vs Dim.2",
+                            axes = c(1,3), repel = TRUE) + theme_minimal()
+
+
 
 
 library(scatterplot3d)
@@ -265,15 +272,15 @@ s3d<-scatterplot3d(first_three_CPs_ind, pch = 16, color="steelblue",type="h")
 
 # Individuals and variables
 
-fviz_pca_biplot(mlb_PCA, labelsize = 2, pointsize = .5, geom="point",
-                col.ind = grupo,
-                # col.var = "cos2", # Variables color
-                # col.ind = "cos2", # Individuals color
-                # gradient.cols=c(low="red", mid="lightblue", high="darkgreen"),
-                addEllipses = TRUE, # Concentration ellipses
-                ellipse.type = "confidence"
-                
-)  %>% ggplotly()
+# fviz_pca_biplot(mlb_PCA, labelsize = 2, pointsize = .5, geom="point",
+#                 col.ind = grupo,
+#                 # col.var = "cos2", # Variables color
+#                 # col.ind = "cos2", # Individuals color
+#                 # gradient.cols=c(low="red", mid="lightblue", high="darkgreen"),
+#                 addEllipses = TRUE, # Concentration ellipses
+#                 ellipse.type = "confidence"
+#                 
+# )  #%>% ggplotly()
 
 biplot_fun <- function(components=c(1,2), select_ind_contrib=50){
   return(list(
@@ -282,7 +289,7 @@ biplot_fun <- function(components=c(1,2), select_ind_contrib=50){
                     axes = components, 
                     addEllipses = TRUE, # Concentration ellipses
                     ellipse.type = "confidence"
-    )  %>% ggplotly(mode='text') 
+    )  #%>% ggplotly(mode='text') 
     ,
     pca<-fviz_pca_biplot(mlb_PCA, labelsize = 2, pointsize = .5, geom="point",
                     col.var = "cos2", # Variables color
@@ -300,21 +307,17 @@ bp2<-fviz_pca_biplot(mlb_PCA, labelsize = 2, pointsize = .5, geom="point",
                 col.var = "cos2", # Variables color
                 col.ind = "cos2", # Individuals color
                 # select.ind = list(contrib = select_ind_contrib), # Top contributing individuals
-                gradient.cols=c(low="red", mid="lightblue", high="darkgreen"),
-                axes = components
+                gradient.cols=c(low="red", mid="lightblue", high="darkgreen")
+                # axes = components
 )
-bggly <- bp2 %>% ggplotly() %>% plotly_build()
-bggly$x$data[[1]]$text <- 
-  with(bp2$data, paste0("name: ", name, 
-                        "</br></br>x: ", x, 
-                        "</br>y: ", y, 
-                        "</br>coord: ", coord, 
-                        "</br>cos2: ", cos2, 
-                        "</br>contrib: ", contrib))
-
-
-
-
+# bggly <- bp2 %>% ggplotly() %>% plotly_build()
+# bggly$x$data[[1]]$text <- 
+#   with(bp2$data, paste0("name: ", name, 
+#                         "</br></br>x: ", x, 
+#                         "</br>y: ", y, 
+#                         "</br>coord: ", coord, 
+#                         "</br>cos2: ", cos2, 
+#                         "</br>contrib: ", contrib))
 
 
 biplot_fun()[[2]]
@@ -323,7 +326,7 @@ biplot_fun(components=c(1,3))
 
 
 # contribution of variables to PCs
-fviz_contrib(mlb_PCA,choice = "var") %>% ggplotly(mode='text') # representa lo que contribyen las variables a la varianza explicada
+fviz_contrib(mlb_PCA,choice = "var") #%>% ggplotly(mode='text') # representa lo que contribyen las variables a la varianza explicada
 fviz_contrib(mlb_PCA,choice = "var", axes=2)
 fviz_contrib(mlb_PCA,choice = "var", axes=3)
 

@@ -395,12 +395,38 @@ if(diff_comp1_comp2>4 & diff_comp2_comp3<1){
 }
 ```
 
-```{r echo=FALSE, results='asis', message=FALSE, warning=FALSE}
-ggplotly(scrplot)
+```{r echo=FALSE, results='asis', message=FALSE, warning=FALSE, fig.align='center', out.width='70%'}
+
+# scrplot
+
+library(shiny)
+div(ggplotly(scrplot, width = 600), align = "center")
+
+# ggplotly(scrplot) %>% layout(autosize = F, width = 500, height = 500)
+
+
 ```
 
+#### **Análisis de las variables con respecto a las componentes**
+
+Representación de las variables en las dimensiones más significativas.  
+
+Indicadores importantes a tener en cuentas:
+
+- **cos2**: Calidad de las variables sobre las componentes representadas. 
+
+- **contrib**: Contribuciones de las variables a cada componente.
 
 
+
+```{r echo=FALSE, results='asis', message=FALSE, warning=FALSE, out.width="50%"}
+
+var_PC1yPC2
+var_PC1yPC3
+
+# grid.arrange(var_PC1yPC2, var_PC1yPC3, ncol=2)
+# subplot(ggplotly(var_PC1yPC2, mode='text'), ggplotly(var_PC1yPC3, mode='text'))ç
+```
 
 
 *WORK IN PROGRESS*
