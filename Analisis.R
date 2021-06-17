@@ -98,10 +98,6 @@ more_corelated_pairs<-function(threshold=.9, sing="P"){ #"P"=positive, "N"=negat
   return(cor_df_final)
 }
 
-# positive_correlated<-more_corelated_pairs()
-# negative_correlated<-more_corelated_pairs(sing="N")
-
-
 
 #somme relevant insigts
 
@@ -228,7 +224,7 @@ cp_more_signif <- importance_of_components[,importance_of_components["eigenvalue
 
 scrplot <- fviz_screeplot(mlb_PCA, linecolor = "darkred")   # or fviz_eig(...) 
 
-# variables
+# Variables
 
 head(mlb_PCA$var$coord)   # Coordinates of variables on the principal components
 head(mlb_PCA$var$cos2)    # Quality of variables on the factor map
@@ -238,6 +234,18 @@ fviz_pca_var(mlb_PCA,            # graph of variables with principal components
              col.var="contrib",  # color by contribution to the pc
              gradient.cols=c(low="red", mid="lightblue", high="darkgreen"),
              repel = TRUE) + theme_minimal()
+
+fviz_pca_var(mlb_PCA,            # graph of variables with principal components
+             col.var="contrib",  # color by contribution to the pc
+             gradient.cols=c(low="red", mid="lightblue", high="darkgreen"),
+             axes = c(1,3), repel = TRUE) + theme_minimal()
+
+
+library(scatterplot3d)
+first_three_CPs_var <- (mlb_PCA$var$contrib%>%as.data.frame())[,1:3]
+s3d<-scatterplot3d(first_three_CPs_var, pch = 16, color="steelblue",type="h")
+text(s3d$xyz.convert(first_three_CPs_var), labels = rownames(first_three_CPs_var),
+     cex= 0.7, col = "darkblue", pos=3)
 
 # Individuals
 
@@ -251,74 +259,92 @@ fviz_pca_ind(mlb_PCA,          # graph of individuals
              ) + theme_minimal() +
   scale_color_gradient2(low="red", mid="lightblue", high="darkgreen", midpoint=0.50) 
 
+first_three_CPs_ind <- (mlb_PCA$ind$contrib%>%as.data.frame())[,1:3]
+s3d<-scatterplot3d(first_three_CPs_ind, pch = 16, color="steelblue",type="h")
 
 
 # Individuals and variables
 
-fviz_pca_biplot(mlb_PCA, repel = FALSE,
-                col.var = "#2E9FDF", # Variables color
-                col.ind = "#696969"  # Individuals color
+fviz_pca_biplot(mlb_PCA, labelsize = 2, pointsize = .5, geom="point",
+                col.ind = grupo,
+                # col.var = "cos2", # Variables color
+                # col.ind = "cos2", # Individuals color
+                # gradient.cols=c(low="red", mid="lightblue", high="darkgreen"),
+                addEllipses = TRUE, # Concentration ellipses
+                ellipse.type = "confidence"
+                
+)  %>% ggplotly()
+
+biplot_fun <- function(components=c(1,2), select_ind_contrib=50){
+  return(list(
+    fviz_pca_biplot(mlb_PCA, labelsize = 2, pointsize = 1, geom = "point",
+                    col.ind = mlb_Hitting_reshape$POS,
+                    axes = components, 
+                    addEllipses = TRUE, # Concentration ellipses
+                    ellipse.type = "confidence"
+    )  %>% ggplotly(mode='text') 
+    ,
+    pca<-fviz_pca_biplot(mlb_PCA, labelsize = 2, pointsize = .5, geom="point",
+                    col.var = "cos2", # Variables color
+                    col.ind = "cos2", # Individuals color
+                    # select.ind = list(contrib = select_ind_contrib), # Top contributing individuals
+                    gradient.cols=c(low="red", mid="lightblue", high="darkgreen"),
+                    axes = components
+    )  #%>% ggplotly(mode='text', tooltip=c('text'))
+    
+  ))
+}
+
+
+bp2<-fviz_pca_biplot(mlb_PCA, labelsize = 2, pointsize = .5, geom="point",
+                col.var = "cos2", # Variables color
+                col.ind = "cos2", # Individuals color
+                # select.ind = list(contrib = select_ind_contrib), # Top contributing individuals
+                gradient.cols=c(low="red", mid="lightblue", high="darkgreen"),
+                axes = components
 )
-
-fviz_pca_biplot(mlb_PCA, 
-                col.var = "#2E9FDF", # Variables color
-                col.ind = "#696969", # Individuals color
-                select.ind = list(contrib = 30), # Top 20 contributing individuals
-                repel = TRUE
-)
-
-
-
+bggly <- bp2 %>% ggplotly() %>% plotly_build()
+bggly$x$data[[1]]$text <- 
+  with(bp2$data, paste0("name: ", name, 
+                        "</br></br>x: ", x, 
+                        "</br>y: ", y, 
+                        "</br>coord: ", coord, 
+                        "</br>cos2: ", cos2, 
+                        "</br>contrib: ", contrib))
 
 
 
-# barplot(-1*pca$rotation[,1], las=2, col="blue", main = "PCA1") #jugadores que más batean y que más impulsan
-barplot(mlb_PCA$var$contrib[,1], las=2, col="blue", main = "PCA1") #jugadores que más batean y que más impulsan
+
+
+
+biplot_fun()[[2]]
+biplot_fun(components=c(1,3))
+
+
+
+# contribution of variables to PCs
+fviz_contrib(mlb_PCA,choice = "var") %>% ggplotly(mode='text') # representa lo que contribyen las variables a la varianza explicada
+fviz_contrib(mlb_PCA,choice = "var", axes=2)
+fviz_contrib(mlb_PCA,choice = "var", axes=3)
+
+
+# contribution of individuals to PCs
+fviz_contrib(mlb_PCA,choice = "ind", top = 20 ) #%>% ggplotly() 
+fviz_contrib(mlb_PCA,choice = "ind", axes = 2, top = 20 )
+fviz_contrib(mlb_PCA,choice = "ind", axes = 3, top = 20 )
+
 
 players<-mlb_Hitting_reshape %>% rownames()
 # players[order(pca$ind$contrib[,1])][1:10]
 
-# qplot(pca$ind$contrib[,1],mlb_Hitting_reshape$G,label=players) +
-#   labs(title="Performance", x="PC1", y="") + theme_bw() +
-#   theme(legend.position = "bottom", panel.border = element_blank()) +
-#   geom_text(size=3, hjust=0, vjust=0, check_overlap = FALSE)
-
-# barplot(pca$var$contrib[,2], las=2, col="blue", main = "PCA2") #jugadores que más batean y que más impulsan
-
-# qplot(pca$ind$contrib[,2],mlb_Hitting_reshape$G,label=players) +
-#   labs(title="Performance", x="PC1", y="") + theme_bw() +
-#   theme(legend.position = "bottom", panel.border = element_blank()) +
-#   geom_text(size=3, hjust=0, vjust=0, check_overlap = FALSE)
-
-
-
-
-
-
-
-
-fviz_contrib(mlb_PCA,choice = "var") # representa lo que contribyen las variables a la varianza explicada
-fviz_contrib(mlb_PCA,choice = "var", axes=2)
-fviz_contrib(mlb_PCA,choice = "var", axes=3)
-#nota: mientras más a la izquierda más contribuye a la varianza
-
-
-fviz_contrib(mlb_PCA,choice = "ind") #%>% ggplotly() #lo que contribuyen los individuos a la varianza explicada
-#nota: mientras más a la izquierda más contribuye a la varianza
-
-
-
-
-
-
 grupo <- as.factor(mlb_Hitting_reshape$POS)
-# ggbiplot::ggbiplot(pca, 
-#                    #labels=rownames(mlb_Hitting_reshape), 
+# ggbiplot::ggbiplot(mlb_PCA,
+#                    #labels=rownames(mlb_Hitting_reshape),
 #                    circle=TRUE, #add a circle to the center of the dataset
-#                    # obs.scale = 1 
+#                    # obs.scale = 1
 #                    # var.scale = 1,
 #                    # var.axes=FALSE,
-#                    groups=grupo, 
+#                    groups=grupo,
 #                    choices = c(1,2), ellipse=TRUE
 #                    ) +
 #   ggtitle("PCA of mtcars dataset")+
@@ -327,22 +353,17 @@ grupo <- as.factor(mlb_Hitting_reshape$POS)
 
 
 
-fviz_pca_ind(mlb_PCA,
-             col.ind = grupo, # color by groups
-             # palette = c("#00AFBB", "#FC4E07","#696969"),
-             addEllipses = TRUE, # Concentration ellipses
-             ellipse.type = "confidence",
-             legend.title = "Groups",
-             # habillage=mlb_Hitting_reshape$POS,
-             repel = TRUE
-) #%>% ggplotly() 
 
-# fviz_ellipses(pca, 
+
+
+# fviz_ellipses(mlb_PCA,
 #               geom = c("point","text"),
-#               habillage=grupo, 
-#               # habillage=1:4, 
+#               habillage=grupo,
+#               # habillage=1:4,
 #               palette = "Dark2",
-#               repel = TRUE) 
+#               repel = TRUE) %>% ggplotly()
+
+
 
 # fviz_pca_biplot(pca,
 #                 col.ind = grupo, # color by groups
