@@ -362,7 +362,7 @@ Los mejores jugadores tendrán más *bases robadas (SB)* con menos *juegos reali
 
 ### Análisis de componenes principales (PCA) 
 
-El Análisis de Componentes Principales (PCA) es una técnica estadística de reducción de la dimensión (número de variables). Es decir, ante un banco de datos con muchas variables, el objetivo será reducirlas a un menor número perdiendo la menor cantidad de información posible. Las nuevas componentes principales serán una combinación lineal de las variables originales e independientes entre sí. 
+El Análisis de Componentes Principales (PCA) es una técnica estadística de reducción de la dimensión (número de variables). Es decir, ante un banco de datos con muchas variables, el objetivo será reducirlas a un menor número perdiendo la menor cantidad de información posible. Las nuevas componentes principales serán una combinación lineal de las variables originales e independientes (no correlacionadas) entre sí. 
 
 Se utilizan las técnicas de PCA si existen altas correlaciones entre las variables, ya que esto es indicativo de información redundante y, por tanto, pocos factores podrán explicar gran parte de la variabilidad total que recogen. El PCA ayuda a determinar si las variables son más o menos parecidas y si existe algún tipo de estructura o agrupación entre ellas.  
 
@@ -383,7 +383,7 @@ kable(importance_of_components, "html", caption = "Importancia de las componenet
 names(cp_more_signif)<-paste( "component", 1:(cp_more_signif%>%names()%>%length()) )
 ```
 
-Se puede escoger como punto de corte hasta la `r cp_more_signif %>% names() %>% last()` 
+Se puede escoger como punto de corte hasta la `r cp_more_signif %>% names() %>% last() %>% paste0(".") ` 
 ```{r echo=FALSE, results='asis', message=FALSE}
 
 diff_comp1_comp2 <- importance_of_components$comp_1[1] - importance_of_components$comp_2[1]

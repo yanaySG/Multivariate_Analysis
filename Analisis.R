@@ -247,7 +247,6 @@ var_PC1yPC3 <- fviz_pca_var(mlb_PCA,            # graph of variables with princi
 
 
 
-
 library(scatterplot3d)
 first_three_CPs_var <- (mlb_PCA$var$contrib%>%as.data.frame())[,1:3]
 s3d<-scatterplot3d(first_three_CPs_var, pch = 16, color="steelblue",type="h")
